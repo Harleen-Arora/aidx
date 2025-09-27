@@ -6,7 +6,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Adjust origin in production
+    allow_origins=["*"],  # In production, specify allowed origins
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -15,52 +15,19 @@ class Message(BaseModel):
     message: str
     language: str  # 'en' or 'hi'
 
-# English responses keyed by English question
+# English FAQ responses (keys lowercase)
 faq_responses_en = {
-    "what is aid x?": (
-        "AID-X is an AI-powered platform developed with the goal of efficiently coordinating aid "
-        "requests and volunteer efforts during critical situations like natural disasters, pandemics, "
-        "or any emergency that requires rapid humanitarian assistance. We provide a real-time map "
-        "and chatbot interface to connect those who need help with those who can provide it."
-    ),
-    "why was aid x made?": (
-        "AID-X was created to address the delay and inefficiency in traditional aid coordination. "
-        "During crises, timely assistance is crucial and many requests go unmet due to lack of information "
-        "and slow response time. Our platform leverages AI and real-time data visualization to streamline "
-        "this process and save lives."
-    ),
-    "what are the goals of aid x?": (
-        "Our primary goals are to empower communities in distress by providing fast access to essential aid, "
-        "create a centralized hub for aid requests and volunteer coordination, improve transparency in "
-        "aid distribution, and build a scalable system that works in diverse emergency scenarios."
-    ),
-    "what does aid x want to achieve?": (
-        "Beyond immediate relief, AID-X aims to establish a sustainable ecosystem of volunteers and aid "
-        "providers that remains active throughout the year, ensuring preparedness for future crises and fostering "
-        "community resilience."
-    ),
-    "who can access aid x?": (
-        "AID-X is accessible to a wide range of users: individuals in need of aid, volunteers willing to help, "
-        "NGOs, government agencies, and any community members seeking to contribute or request resources."
-    ),
-    "how does aid x work?": (
-        "Users submit their aid requests or volunteer information through our user-friendly interface. "
-        "Requests are pinned on a real-time interactive map for visibility. Our chatbot provides realtime assistance, "
-        "answering user queries with AI-powered natural language understanding to guide users and optimize aid delivery."
-    ),
-    "how to put requests on aid x?": (
-        "To submit an aid request, register or log in to our platform, fill in the details of your needs "
-        "(such as food, medical supplies, shelter), provide your location, and submit. Your request will then appear "
-        "on the live map, alerting nearby volunteers and aid agencies."
-    ),
-    "how to login or sign up?": (
-        "You can create a new account by providing your basic information and contact details using the sign-up form. "
-        "If you already have an account, log in using your registered email and password. "
-        "This allows you to submit requests, offer help, and track your interactions."
-    ),
+    "what is aid x?": "AID-X is an AI-powered platform developed with the goal of efficiently coordinating aid requests and volunteer efforts during critical situations like natural disasters, pandemics, or any emergency that requires rapid humanitarian assistance. We provide a real-time map and chatbot interface to connect those who need help with those who can provide it.",
+    "why was aid x made?": "AID-X was created to address the delay and inefficiency in traditional aid coordination. During crises, timely assistance is crucial and many requests go unmet due to lack of information and slow response time. Our platform leverages AI and real-time data visualization to streamline this process and save lives.",
+    "what are the goals of aid x?": "Our primary goals are to empower communities in distress by providing fast access to essential aid, create a centralized hub for aid requests and volunteer coordination, improve transparency in aid distribution, and build a scalable system that works in diverse emergency scenarios.",
+    "what does aid x want to achieve?": "Beyond immediate relief, AID-X aims to establish a sustainable ecosystem of volunteers and aid providers that remains active throughout the year, ensuring preparedness for future crises and fostering community resilience.",
+    "who can access aid x?": "AID-X is accessible to a wide range of users: individuals in need of aid, volunteers willing to help, NGOs, government agencies, and any community members seeking to contribute or request resources.",
+    "how does aid x work?": "Users submit their aid requests or volunteer information through our user-friendly interface. Requests are pinned on a real-time interactive map for visibility. Our chatbot provides realtime assistance, answering user queries with AI-powered natural language understanding to guide users and optimize aid delivery.",
+    "how to put requests on aid x?": "To submit an aid request, register or log in to our platform, fill in the details of your needs (such as food, medical supplies, shelter), provide your location, and submit. Your request will then appear on the live map, alerting nearby volunteers and aid agencies.",
+    "how to login or sign up?": "You can create a new account by providing your basic information and contact details using the sign-up form. If you already have an account, log in using your registered email and password. This allows you to submit requests, offer help, and track your interactions.",
 }
 
-# Hindi responses keyed by Hindi question phrase
+# Hindi FAQ responses
 faq_responses_hi = {
     "एड-एक्स क्या है?": "[एड-एक्स एक एआई-संचालित सहायता समन्वय मंच है जो प्राकृतिक आपदाओं, महामारियों या किसी भी आपातकालीन स्थिति में सहायता मांग और स्वयंसेवक प्रयासों के कुशल समन्वय के लिए विकसित किया गया है। हमारा प्लेटफ़ॉर्म एक वास्तविक समय मानचित्र और चैटबॉट इंटरफ़ेस प्रदान करता है जो मदद करने वालों और मदद मांगने वालों को जोड़ता है।]",
     "एड-एक्स क्यों बनाया गया?": "[एड-एक्स पारंपरिक सहायता समन्वय में होने वाली देरी और अक्षमता को दूर करने के लिए बनाया गया था। आपदाओं के दौरान, समय पर सहायता महत्त्वपूर्ण होती है और बहुत से अनुरोध सूचनाओं की कमी और धीमी प्रतिक्रियाओं के कारण पूरी नहीं हो पाते। हमारा प्लेटफ़ॉर्म एआई और वास्तविक समय डेटा विज़ुअलाइज़ेशन का उपयोग करता है ताकि इस प्रक्रिया को सुव्यवस्थित किया जा सके।]",
@@ -80,7 +47,7 @@ faq_responses = {
 @app.post("/chat")
 async def chat(message: Message):
     lang = message.language.lower()
-    user_message = message.message.strip()
+    user_message = message.message.strip().lower()  # Lowercase for case-insensitivity
 
     responses = faq_responses.get(lang, faq_responses_en)
     answer = responses.get(user_message)

@@ -75,15 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     <title>Sign In to AID-X</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
-    <nav class="navbar">
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="signin.php">Sign In</a></li>
-    <li><a href="singup.php">Sign Up</a></li>
-    <li><a href="login.php">Login</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
-    <li><a href="aidxForm.php">Aid Form</a></li>
-    <li><a href="map.html">Map</a></li>
+   
 
   </ul>
 </nav>
@@ -403,6 +395,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     </style>
 </head>
 <body>
+     <nav class="navbar">
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="signin.php">Sign In</a></li>
+    <li><a href="singup.php">Sign Up</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="aidxForm.php">Aid Form</a></li>
+    <li><a href="map.html">Map</a></li>
     <div class="signin-container">
         
         <div class="branding-side">

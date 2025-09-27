@@ -76,16 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
-    <nav class="navbar">
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="signin.php">Sign In</a></li>
-    <li><a href="singup.php">Sign Up</a></li>
-    <li><a href="login.php">Login</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
-    <li><a href="aidxForm.php">Aid Form</a></li>
-    <li><a href="map.html">Map</a></li>
-
+   
   </ul>
 </nav>
     <style>
@@ -187,6 +178,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     </script>
 </head>
 <body class="font-sans min-h-screen auth-background flex items-center justify-center p-4">
+ <nav class="navbar">
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="signin.php">Sign In</a></li>
+    <li><a href="singup.php">Sign Up</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="aidxForm.php">Aid Form</a></li>
+    <li><a href="map.html">Map</a></li>
 
     <!-- Authentication Container (Form Card) -->
     <div class="auth-container w-full max-w-md mx-auto p-8 sm:p-10 rounded-xl shadow-2xl bg-black bg-opacity-30 backdrop-blur-sm">
