@@ -1,22 +1,11 @@
 <?php
 session_start();
-
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'aidx_db'); // Your DB name
-define('DB_USER', 'root');        // Your DB user
-define('DB_PASS', '');            // Your DB password
-define('DB_CHARSET', 'utf8mb4');
+require_once 'config.php';
 
 $errors = [];
 
-try {
-    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
-} catch (PDOException $e) {
-    $errors[] = "Database connection failed. Please try again later.";
+if (!$pdo) {
+    $errors[] = "Database connection failed. Please run setup_database.php first.";
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
@@ -69,431 +58,253 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In to AID-X</title>
+    <title>Sign In - AID-X: Connecting Hearts, Delivering Hope</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <iframe src="../html/chatbot.html"
-        style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
+    
+    <iframe src="../html/chatbot.html" class="chatbot-iframe"></iframe>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#00b4d8',
+                        'secondary': '#48cae4',
+                        'accent': '#90e0ef',
+                        'background': '#003049'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1543269865-cbe426643c99?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
-        .navbar {
-            background-color: #0F766E;
-            /* primary blue */
-            padding: 10px 20px;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        .hero-background {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
-
-        .nav-links {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links li {
-            margin: 0 15px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            color: #ffdd57;
-            /* theme accent */
-        }
-
-        /* --- CSS Styling (style.css content merged here) --- */
-        :root {
-            --primary-color: #007bff;
-            /* Bright blue for accents */
-            --primary-hover: #0056b3;
-            --background-dark: #1e1e2f;
-            /* Dark background (AID-X theme) */
-            --surface-dark: #2a2a44;
-            /* Slightly lighter surface for the form */
-            --text-light: #f0f0f0;
-            /* Light text */
-            --text-muted: #a0a0b0;
-            /* Muted text for links/hints */
-            --border-color: #444466;
-            /* Subtle border */
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--background-dark);
-            color: var(--text-light);
-            /* display: flex; */
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* --- Container Layout --- */
-        .signin-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* width: 80%;
-            max-width: 1200px; */
-            margin: 100px 70px;
-            background-color: var(--surface-dark);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-        }
-
-        /* --- Branding Side (Left) --- */
-        .branding-side {
-            flex: 1;
-            /* background: linear-gradient(135deg, #1e1e2f, #3a3a5a); */
-            padding: 60px 40px;
+        
+        .hamburger-menu {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            position: relative;
+            cursor: pointer;
         }
-
-        .logo {
-            font-size: 1.5em;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 20px;
+        
+        .hamburger-line {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+            display: block;
         }
-
-        .branding-side h1 {
-            font-size: 2.2em;
-            margin-bottom: 20px;
-            line-height: 1.2;
+        
+        @media (max-width: 767px) {
+            .hamburger-menu {
+                display: flex !important;
+            }
         }
-
-        .branding-side p {
-            color: var(--text-muted);
-            font-size: 1.1em;
+        
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
         }
-
-        .illustration-placeholder {
-            /* Subtle glow/animation effect for the AI theme */
-            position: absolute;
+        
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .chatbot-iframe {
+            position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
-            opacity: 0.15;
-            animation: pulse 4s infinite alternate;
-        }
-
-        @keyframes pulse {
-            from {
-                transform: scale(0.9);
-                opacity: 0.15;
-            }
-
-            to {
-                transform: scale(1.1);
-                opacity: 0.25;
-            }
-        }
-
-
-        /* --- Form Side (Right) --- */
-        .form-side {
-            flex: 1;
-            padding: 60px 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .signin-form {
-            width: 100%;
-            max-width: 380px;
-        }
-
-        .signin-form h2 {
-            font-size: 2em;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        /* Input Fields */
-        .input-group {
-            position: relative;
-            margin-bottom: 20px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 12px 12px 12px 40px;
-            /* Adjust padding for icon */
-            background-color: var(--surface-dark);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-light);
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-
-        .input-group input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .input-group input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        .input-group .icon {
-            position: absolute;
-            top: 50%;
-            left: 12px;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 1.1em;
-        }
-
-        /* Form Options (Remember Me / Forgot Password) */
-        .form-options {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            font-size: 0.9em;
-        }
-
-        .form-options label {
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        .form-options a {
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .form-options a:hover {
-            color: var(--text-light);
-        }
-
-        /* Main Sign-In Button */
-        .signin-button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
-            color: white;
+            width: 400px;
+            height: 600px;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.1s;
+            z-index: 9999;
+            pointer-events: auto;
         }
-
-        .signin-button:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .signin-button:active {
-            transform: scale(0.99);
-        }
-
-        /* Social Login */
-        .social-login-separator {
-            text-align: center;
-            margin: 30px 0 20px;
-        }
-
-        .social-login-separator p {
+        
+        input, textarea, select {
+            pointer-events: auto !important;
             position: relative;
-            display: inline-block;
-            color: var(--text-muted);
+            z-index: 50 !important;
+        }
+        
+        form {
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 50 !important;
         }
 
-        .social-login-separator p::before,
-        .social-login-separator p::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 50px;
-            /* Length of the line */
-            height: 1px;
-            background-color: var(--border-color);
-        }
-
-        .social-login-separator p::before {
-            right: 100%;
-            margin-right: 15px;
-        }
-
-        .social-login-separator p::after {
-            left: 100%;
-            margin-left: 15px;
-        }
-
-        .social-buttons {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-
-        .social-btn {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: transparent;
-            color: var(--text-light);
-            font-size: 1em;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-        }
-
-        .social-btn i {
-            margin-right: 8px;
-        }
-
-        .social-btn:hover {
-            background-color: #383857;
-            /* Slightly darker hover */
-            border-color: var(--primary-color);
-        }
-
-        .social-btn.google {
-            color: #db4437;
-        }
-
-        /* Google brand color for icon */
-        .social-btn.github {
-            color: #fff;
-        }
-
-        /* White for GitHub icon */
-
-
-        /* Sign Up Link */
-        .signup-link {
-            text-align: center;
-            font-size: 0.95em;
-            color: var(--text-muted);
-        }
-
-        .signup-link a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .signup-link a:hover {
-            text-decoration: underline;
-        }
-
-        /* --- Responsiveness --- */
-        @media (max-width: 900px) {
-            .signin-container {
-                flex-direction: column;
-                width: 90%;
-                max-width: 500px;
-            }
-
-            .branding-side {
-                display: none;
-                /* Hide the visual side on smaller screens */
-            }
-
-            .form-side {
-                padding: 40px 30px;
-            }
-        }
     </style>
 </head>
+<body class="font-sans min-h-screen bg-gray-50">
 
-<body>
-    <nav class="navbar">
-        <ul class="nav-links">
-            <li><a href="../html/index.html">Home</a></li>
-            <li><a href="signin.php">Sign In</a></li>
-            <li><a href="singup.php">Sign Up</a></li>
-            <li><a href="../html/dashboard.html">Dashboard</a></li>
-            <li><a href="aidxForm.php">Aid Form</a></li>
-            <li><a href="../html/map.html">Map</a></li>
-        </ul>
-    </nav>
-
-    <div class="signin-container">
-
-        <div class="branding-side">
-            <div class="logo">
-                <h2>AID-X></h2>
-            </div>
-            <h1>SMART GIVING TIMELY LIVING</h1>
-            <p>Sign in to AID-X to donate,volunteer, or receive suooirt secureky.</p>
-            <div class="illustration-placeholder">
-            </div>
-        </div>
-
-        <div class="form-side">
-            <form class="signin-form" method="post" action="">
-                <h2>Welcome Back</h2>
-                <?php if (!empty($errors)): ?>
-                    <div style="background:#f8d7da; color:#842029; padding:10px; border-radius:5px; margin-bottom:15px;">
-                        <ul>
-                            <?php foreach ($errors as $error): ?>
-                                <li><?= htmlspecialchars($error) ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
-
-
-                <div class="input-group">
-                    <i class="fas fa-user icon"></i>
-                    <input type="text" id="username" name="username" placeholder="Username or Email" required>
-                </div>
-
-                <div class="input-group">
-                    <i class="fas fa-lock icon"></i>
-                    <input type="password" id="password" name="password" placeholder="Password" required>
-                </div>
-
-                <div class="form-options">
-                    <label>
-                        <input type="checkbox" name="remember"> Remember Me
-                    </label>
-                    <a href="#" class="forgot-password">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="signin-button">Sign In</button>
-
-                <div class="social-login-separator">
-
-                </div>
-
-
-
-                <p class="signup-link">
-                    Don't have an account? <a href="singup.php">Create an Account</a>
-                </p>
-            </form>
-        </div>
-
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select onchange="changeLanguage(this.value)">
+            <option value="en">🇺🇸 EN</option>
+            <option value="hi">🇮🇳 हि</option>
+        </select>
     </div>
+
+    <div class="hero-background bg-hero-pattern min-h-screen flex flex-col relative">
+        <div class="absolute inset-0 bg-background opacity-80 backdrop-blur-sm pointer-events-none"></div>
+
+        <header class="relative z-10 bg-white/10 backdrop-blur-md border-b border-white/20">
+            <nav class="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
+                <div class="text-2xl md:text-3xl font-extrabold text-white tracking-wider flex items-center">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    AID-<span class="text-secondary">X</span>
+                </div>
+
+                <div class="flex items-center space-x-2 lg:hidden">
+                    <button class="p-2 bg-white bg-opacity-20 rounded-lg" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                        <div class="hamburger-menu">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </div>
+                    </button>
+                </div>
+                
+                <div class="hidden lg:flex items-center space-x-4 xl:space-x-8">
+                    <a href="../index.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
+                    <a href="#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
+                    <a href="#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
+                    <a href="#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
+                    <a href="signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
+                    <a href="singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+                </div>
+
+            </nav>
+        </header>
+        
+        <div id="mobile-nav" class="hidden lg:hidden relative z-20 bg-white/10 backdrop-blur-md border-b border-white/20">
+            <div class="px-6 py-4 space-y-3">
+                <a href="../index.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
+                <a href="#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
+                <a href="#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
+                <a href="#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
+                <a href="signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
+                <a href="singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
+            </div>
+        </div>
+
+        <main class="relative z-30 flex-grow flex items-center justify-center p-4">
+            <div class="w-full max-w-md mx-auto">
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-primary/50 relative z-40">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+                        <p class="text-gray-300">Sign in to your AID-X account</p>
+                    </div>
+
+                    <?php if (!empty($errors)): ?>
+                        <div class="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
+                            <ul class="list-disc list-inside">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?= htmlspecialchars($error) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="post" action="" class="space-y-6">
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username or Email</label>
+                            <div class="relative">
+                                <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="text" id="username" name="username" 
+                                       class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                       placeholder="Enter your username or email" required>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                            <div class="relative">
+                                <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                <input type="password" id="password" name="password" 
+                                       class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                       placeholder="Enter your password" required>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center text-sm text-gray-300">
+                                <input type="checkbox" name="remember" class="mr-2 rounded">
+                                Remember me
+                            </label>
+                            <a href="#" class="text-sm text-secondary hover:text-accent transition duration-200">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-300">
+                            Don't have an account? 
+                            <a href="singup.php" class="text-secondary hover:text-accent font-semibold transition duration-200">Sign up</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobile-nav');
+            const hamburger = document.querySelector('.hamburger-menu');
+            
+            mobileNav.classList.toggle('hidden');
+            hamburger.classList.toggle('active');
+        }
+        
+        function changeLanguage(lang) {
+            // Language switching functionality
+            console.log('Language changed to:', lang);
+        }
+    </script>
 </body>
 
 </html>

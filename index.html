@@ -3,50 +3,343 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AID-X - Language Selection</title>
+    <title>AID-X - Smart Humanitarian Support Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#00b4d8',
+                        'secondary': '#48cae4',
+                        'accent': '#90e0ef',
+                        'background': '#003049'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1543269865-cbe426643c99?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+                    }
+                }
+            }
+        }
+    </script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-        body { font-family: 'Inter', sans-serif; }
+        
+        .hero-background {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .hamburger-line {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+            display: block;
+        }
+        
+        @media (max-width: 767px) {
+            .hamburger-menu {
+                display: flex !important;
+            }
+        }
+        
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center">
-    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4">
-        <div class="text-center mb-8">
-            <div class="flex items-center justify-center mb-4">
-                <svg class="w-12 h-12 text-teal-600 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                </svg>
-                <h1 class="text-3xl font-bold text-gray-800">AID-X</h1>
+<body class="font-sans min-h-screen bg-gray-50">
+
+    <div class="hero-background bg-hero-pattern min-h-screen flex flex-col relative">
+        <div class="absolute inset-0 bg-background opacity-80 backdrop-blur-sm pointer-events-none"></div>
+
+        <header class="relative z-10 bg-white/10 backdrop-blur-md border-b border-white/20">
+            <nav class="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
+                <div class="text-2xl md:text-3xl font-extrabold text-white tracking-wider flex items-center">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    AID-<span class="text-secondary">X</span>
+                </div>
+
+                <div class="flex items-center space-x-2 lg:hidden">
+                    <button class="p-2 bg-white bg-opacity-20 rounded-lg" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                        <div class="hamburger-menu">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </div>
+                    </button>
+                </div>
+                
+                <div class="hidden lg:flex items-center space-x-4 xl:space-x-8">
+                    <a href="../index.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
+                    <a href="#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
+                    <a href="#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
+                    <a href="#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
+                    <a href="php/signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
+                    <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+                </div>
+
+            </nav>
+        </header>
+        
+        <div id="mobile-nav" class="hidden lg:hidden relative z-20 bg-white/10 backdrop-blur-md border-b border-white/20">
+            <div class="px-6 py-4 space-y-3">
+                <a href="../index.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
+                <a href="#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
+                <a href="#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
+                <a href="#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
+                <a href="php/signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
+                <a href="php/singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
             </div>
-            <p class="text-gray-600">Choose your language / भाषा चुनें</p>
         </div>
-        
-        <div class="space-y-4">
-            <a href="html/index.html" class="block w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 text-center">
-                🏠 Main Site
-            </a>
-            
-            <a href="lang/en/index.html" class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 text-center">
-                🇺🇸 English
-            </a>
-            
-            <a href="lang/hi/index.html" class="block w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 text-center">
-                🇮🇳 हिन्दी (Hindi)
-            </a>
-            
-            <a href="lang/es/index.html" class="block w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 text-center">
-                🇪🇸 Español (Spanish)
-            </a>
-            
-            <a href="lang/fr/index.html" class="block w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-xl transition duration-300 text-center">
-                🇫🇷 Français (French)
-            </a>
-        </div>
-        
-        <div class="mt-8 text-center">
-            <p class="text-sm text-gray-500">Connecting Hearts, Delivering Hope</p>
-        </div>
+
+        <!-- Hero Section -->
+        <main class="relative z-30 flex items-center justify-center py-20 px-4" id="home">
+            <div class="w-full max-w-6xl mx-auto">
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left Content -->
+                    <div class="text-left">
+                        <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">Smart Humanitarian Support Platform</h1>
+                        <p class="text-xl text-gray-300 mb-8 leading-relaxed">Making giving faster, transparent, and more impactful. Connect donors, NGOs, volunteers, and people in need through real-time, technology-driven solutions.</p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Get Started</a>
+                            <a href="#mission" class="border-2 border-secondary text-secondary px-8 py-4 rounded-lg font-semibold hover:bg-secondary hover:text-white transition duration-300 text-center">Learn More</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Image -->
+                    <div class="flex justify-center lg:justify-end">
+                        <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-500 hover:shadow-3xl animate-fade-in max-w-lg w-full overflow-hidden">
+                            <img src="assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Platform" class="w-full h-auto">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Mission & Vision -->
+        <section id="mission" class="relative z-30 py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Our Purpose</h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Driving meaningful change through technology and compassion</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl text-center">
+                        <h3 class="text-3xl font-bold text-white mb-4">Our Mission</h3>
+                        <p class="text-gray-300 text-lg">To revolutionize the way humanitarian aid is delivered by making it smart, transparent, and timely for everyone.</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl text-center">
+                        <h3 class="text-3xl font-bold text-white mb-4">Our Vision</h3>
+                        <p class="text-gray-300 text-lg">To build a world where no call for help goes unheard, and every act of giving creates measurable, meaningful change.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us -->
+        <section id="about" class="relative z-30 py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">About AID-X</h2>
+                        <p class="text-xl text-gray-300 mb-6">We are dedicated to transforming humanitarian aid through innovative technology and transparent processes.</p>
+                        <p class="text-gray-300 mb-8">AID-X was born from the vision of creating a world where humanitarian aid reaches those who need it most, when they need it most. We leverage cutting-edge technology to bridge the gap between donors, NGOs, and beneficiaries.</p>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-primary mb-2">10K+</div>
+                                <div class="text-gray-300">Lives Impacted</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-primary mb-2">500+</div>
+                                <div class="text-gray-300">NGO Partners</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl">
+                        <h3 class="text-2xl font-bold text-white mb-4">Our Impact</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-primary rounded-full mr-3"></div>
+                                <span class="text-gray-300">Transparent aid distribution</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-secondary rounded-full mr-3"></div>
+                                <span class="text-gray-300">Real-time tracking of resources</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-4 h-4 bg-accent rounded-full mr-3"></div>
+                                <span class="text-gray-300">Trusted ecosystem for giving</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section id="services" class="relative z-30 py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Platform Features</h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Powerful tools designed for maximum impact</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl text-center transform hover:scale-105 transition-all duration-300">
+                        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shield-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Secure Platform</h3>
+                        <p class="text-gray-300 text-sm">End-to-end encryption and secure transactions</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl text-center transform hover:scale-105 transition-all duration-300">
+                        <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-mobile-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Mobile First</h3>
+                        <p class="text-gray-300 text-sm">Optimized for all devices and platforms</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl text-center transform hover:scale-105 transition-all duration-300">
+                        <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-line text-background text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Analytics</h3>
+                        <p class="text-gray-300 text-sm">Real-time insights and impact tracking</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl shadow-xl text-center transform hover:scale-105 transition-all duration-300">
+                        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-globe text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-white mb-2">Global Reach</h3>
+                        <p class="text-gray-300 text-sm">Connect with organizations worldwide</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="relative z-30 py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">What People Say</h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Hear from our community of changemakers</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Sarah Johnson</h4>
+                                <p class="text-gray-300 text-sm">NGO Director</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"AID-X has revolutionized how we manage and distribute aid. The transparency and efficiency are unmatched."</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Michael Chen</h4>
+                                <p class="text-gray-300 text-sm">Volunteer Coordinator</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"The real-time tracking feature helps us coordinate relief efforts more effectively than ever before."</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl shadow-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 bg-accent rounded-full flex items-center justify-center mr-4">
+                                <i class="fas fa-user text-background"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-semibold">Emma Rodriguez</h4>
+                                <p class="text-gray-300 text-sm">Donor</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300">"I love being able to see exactly where my donations go and the impact they're making in real-time."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact/CTA -->
+        <section id="contact" class="relative z-30 py-20">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="bg-white/10 backdrop-blur-md p-12 rounded-3xl shadow-2xl">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Make a Difference?</h2>
+                    <p class="text-xl text-gray-300 mb-8">Join thousands of donors, NGOs, and volunteers making humanitarian aid more effective</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg">Join as Donor</a>
+                        <a href="php/singup.php" class="bg-secondary hover:bg-primary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg">Register NGO</a>
+                        <a href="html/chatbot.html" class="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-background transition duration-300">Get Support</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="relative z-30 bg-black bg-opacity-50 text-white py-12 mt-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <p class="text-2xl font-semibold mb-4">Connecting Hearts, Delivering Hope</p>
+                <p class="text-gray-300">© 2024 AID-X. All rights reserved.</p>
+            </div>
+        </footer>
     </div>
+
+    <script src="js/responsive.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobile-nav');
+            const hamburger = document.querySelector('.hamburger-menu');
+            
+            mobileNav.classList.toggle('hidden');
+            hamburger.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

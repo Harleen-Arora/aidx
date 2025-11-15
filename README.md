@@ -1,33 +1,31 @@
-# AID-X Website - Responsive Design
+# AID-X - Smart Humanitarian Support Platform
+
+## Project Overview
+
+AID-X is a smart humanitarian support platform designed to make giving faster, transparent, and more impactful. We connect donors, NGOs, volunteers, and people in need through a real-time, technology-driven system that ensures help reaches the right place at the right time.
+
+### Our Mission
+To revolutionize the way humanitarian aid is delivered by making it smart, transparent, and timely for everyone.
+
+### Our Vision
+To build a world where no call for help goes unheard, and every act of giving creates measurable, meaningful change.
 
 ## Project Structure
 
-The website has been reorganized into a clean, maintainable folder structure:
-
 ```
 aidx/
-├── index.html                 # Language selection page
+├── index.html                 # Main homepage
 ├── README.md                  # This documentation file
 ├── css/                       # Stylesheets
 │   ├── responsive.css         # Mobile-first responsive styles
-│   └── styles.css             # Original styles (moved)
+│   └── styles.css             # Main styles
 ├── js/                        # JavaScript files
 │   ├── responsive.js          # Responsive functionality
 │   ├── config.js              # Configuration management
-│   └── components/            # Future component scripts
-├── lang/                      # Multi-language support
-│   ├── en/                    # English version
-│   │   └── index.html         # English homepage
-│   ├── hi/                    # Hindi version
-│   │   └── index.html         # Hindi homepage
-│   ├── es/                    # Spanish version
-│   │   └── index.html         # Spanish homepage
-│   └── fr/                    # French version
-│       └── index.html         # French homepage
+│   └── components/            # Component scripts
 ├── html/                      # HTML pages
-│   ├── index.html             # Main homepage (moved)
-│   ├── chatbot.html           # Chatbot interface (responsive)
-│   ├── dashboard.html         # User dashboard (responsive)
+│   ├── chatbot.html           # Chatbot interface
+│   ├── dashboard.html         # User dashboard
 │   └── map.html               # Map functionality
 ├── php/                       # PHP backend files
 │   ├── aidxForm.php           # Aid request form
@@ -39,6 +37,21 @@ aidx/
     ├── images/                # Image files
     └── icons/                 # Icon files
 ```
+
+## Core Features
+
+### What We Do
+- Connect donors with verified beneficiaries and NGOs
+- Enable real-time tracking of relief operations
+- Provide data-driven insights for impactful decisions
+- Simplify resource distribution during emergencies
+- Build a trusted digital ecosystem for smart giving
+
+### Why AID-X?
+- Fast, reliable, tech-powered aid management
+- Transparency at every step
+- Easy-to-use platform for donors, NGOs, and volunteers
+- Designed for emergencies as well as community welfare
 
 ## Responsive Features
 
@@ -78,15 +91,9 @@ aidx/
 
 ## File Organization Benefits
 
-### Multi-Language Support
-- `lang/`: Language-specific folders (en, hi, es, fr)
-- Auto-detection of browser language
-- Consistent structure across all languages
-- Easy to add new languages
-
 ### CSS Structure
 - `responsive.css`: Mobile-first responsive styles
-- `styles.css`: Original styles preserved
+- `styles.css`: Main styles
 - Modular approach for easier maintenance
 
 ### JavaScript Organization
@@ -100,7 +107,6 @@ aidx/
 - Semantic HTML5 elements
 - Proper viewport meta tags
 - Accessible navigation patterns
-- Multi-language support with proper lang attributes
 
 ### PHP Backend
 - Organized in dedicated `php/` folder
@@ -187,4 +193,4 @@ aidx/
 ---
 
 **Last Updated**: December 2024
-**Version**: 1.0.0 - Responsive Implementation
+**Version**: 1.0.0 - AID-X Platform Implementation

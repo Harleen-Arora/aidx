@@ -1,23 +1,12 @@
 <?php
 session_start();
-
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'aidx_db');  // Your database name
-define('DB_USER', 'root');         // Your database username
-define('DB_PASS', '');             // Your database password
-define('DB_CHARSET', 'utf8mb4');
+require_once 'config.php';
 
 $errors = [];
 $success_message = '';
 
-try {
-    $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
-    $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
-} catch (PDOException $e) {
-    $errors[] = "Database connection failed. Please try again later.";
+if (!$pdo) {
+    $errors[] = "Database connection failed. Please run setup_database.php first.";
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
@@ -72,219 +61,251 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up Page</title>
-    <!-- Load Tailwind CSS -->
+    <title>Sign Up - AID-X: Connecting Hearts, Delivering Hope</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <iframe src="../html/chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
-   
-  </ul>
-</nav>
-    <style>
-         .navbar {
-    background-color: #0F766E; /* primary blue */
-    padding: 10px 20px;
-  }
-
-  .nav-links {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 0;
-    padding: 0;
-  }
-
-  .nav-links li {
-    margin: 0 15px;
-  }
-
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-  }
-
-  .nav-links a:hover {
-    color: #ffdd57; /* theme accent */
-  }
-        /* Custom styles to replicate the background image with the dark blue overlay */
-        .auth-background {
-            /* Using a placeholder URL for the /building background */
-            background-size: cover;
-            background-position: center;
-            /* Applying a dark blue overlay using a linear gradient */
-            background-color: #1F2E4D; /* Base dark blue color */
-            position: relative;
-        }
-
-        .auth-background::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            /* Dark semi-transparent overlay to match the image */
-            background: rgba(31, 46, 77, 0.8);
-        }
-
-        /* Ensure the content sits above the overlay */
-        .auth-container {
-            position: relative;
-            z-index: 10;
-        }
-
-        /* Style for input fields to match the rounded, semi-transparent look */
-        .form-input-custom {
-            background-color: rgba(255, 255, 255, 0.1); /* Slightly visible white background */
-            border: none;
-            color: #ffffff; /* White text input */
-            padding: 1rem 1.5rem;
-            border-radius: 9999px; /* Full rounded pill shape */
-            width: 100%;
-            outline: none;
-            transition: background-color 0.2s;
-            font-size: 1rem;
-        }
-
-        .form-input-custom:focus {
-            background-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Blue glow on focus */
-        }
-        
-        /* Placeholder styling for visibility */
-        .form-input-custom::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-        
-        /* Hide the default number controls for password/text inputs */
-        input[type="password"]::-ms-reveal,
-        input[type="password"]::-ms-clear {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/responsive.css">
+    
+    <iframe src="../html/chatbot.html" class="chatbot-iframe"></iframe>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    colors: {
+                        'primary': '#00b4d8',
+                        'secondary': '#48cae4',
+                        'accent': '#90e0ef',
+                        'background': '#003049'
+                    },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                     },
+                    backgroundImage: {
+                        'hero-pattern': "url('https://images.unsplash.com/photo-1543269865-cbe426643c99?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+                    }
                 }
             }
         }
     </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        
+        .hero-background {
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .hamburger-menu {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+        
+        .hamburger-line {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+            display: block;
+        }
+        
+        @media (max-width: 767px) {
+            .hamburger-menu {
+                display: flex !important;
+            }
+        }
+        
+        .hamburger-menu.active .hamburger-line:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        
+        .hamburger-menu.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        
+        .hamburger-menu.active .hamburger-line:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 1s ease-out;
+        }
+        
+        .chatbot-iframe {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 400px;
+            height: 600px;
+            border: none;
+            z-index: 9999;
+            pointer-events: auto;
+        }
+        
+        input, textarea, select {
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 50 !important;
+        }
+        
+        form {
+            pointer-events: auto !important;
+            position: relative;
+            z-index: 50 !important;
+        }
+    </style>
 </head>
-<body class="font-sans min-h-screen auth-background">
- <nav class="navbar">
-  <ul class="nav-links">
-    <li><a href="../html/index.html">Home</a></li>
-    <li><a href="signin.php">Sign In</a></li>
-    <li><a href="singup.php">Sign Up</a></li>
-    <li><a href="../html/dashboard.html">Dashboard</a></li>
-    <li><a href="aidxForm.php">Aid Form</a></li>
-    <li><a href="../html/map.html">Map</a></li>
-  </ul>
-</nav>
+<body class="font-sans min-h-screen bg-gray-50">
 
-<div class="flex items-center justify-center p-4 min-h-screen">
-    <!-- Authentication Container (Form Card) -->
-    <div class="auth-container w-full max-w-md mx-auto p-8 sm:p-10 rounded-xl shadow-2xl bg-black bg-opacity-30 backdrop-blur-sm">
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <select onchange="changeLanguage(this.value)">
+            <option value="en">🇺🇸 EN</option>
+            <option value="hi">🇮🇳 हि</option>
+        </select>
+    </div>
 
-        <!-- Header Tabs -->
-        <div class="flex text-lg font-bold mb-8 text-white">
-            
-            
-            <!-- Active Sign Up Tab -->
-            <div class="py-2 border-b-2 border-blue-500">SIGN UP</div>
+    <div class="hero-background bg-hero-pattern min-h-screen flex flex-col relative">
+        <div class="absolute inset-0 bg-background opacity-80 backdrop-blur-sm pointer-events-none"></div>
+
+        <header class="relative z-10 bg-white/10 backdrop-blur-md border-b border-white/20">
+            <nav class="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
+                <div class="text-2xl md:text-3xl font-extrabold text-white tracking-wider flex items-center">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                    </svg>
+                    AID-<span class="text-secondary">X</span>
+                </div>
+
+                <div class="flex items-center space-x-2 lg:hidden">
+                    <button class="p-2 bg-white bg-opacity-20 rounded-lg" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                        <div class="hamburger-menu">
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                            <span class="hamburger-line"></span>
+                        </div>
+                    </button>
+                </div>
+                
+                <div class="hidden lg:flex items-center space-x-4 xl:space-x-8">
+                    <a href="../index.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
+                    <a href="#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
+                    <a href="#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
+                    <a href="#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
+                    <a href="signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
+                    <a href="singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+                </div>
+
+            </nav>
+        </header>
+        
+        <div id="mobile-nav" class="hidden lg:hidden relative z-20 bg-white/10 backdrop-blur-md border-b border-white/20">
+            <div class="px-6 py-4 space-y-3">
+                <a href="../index.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
+                <a href="#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
+                <a href="#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
+                <a href="#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
+                <a href="signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
+                <a href="singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
+            </div>
         </div>
 
-        <!-- Sign Up Form -->
-        <form id="signup-form" method="post" action="">
-            <?php if (!empty($success_message)): ?>
-                <div style="background:#d4edda; color:#155724; padding:10px; border-radius:5px; margin-bottom:15px;">
-                    <?= htmlspecialchars($success_message) ?>
+        <main class="relative z-30 flex-grow flex items-center justify-center p-4">
+            <div class="w-full max-w-md mx-auto">
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-primary/50 relative z-40">
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-white mb-2">Create Account</h1>
+                        <p class="text-gray-300">Join the AID-X community</p>
+                    </div>
+
+                    <?php if (!empty($success_message)): ?>
+                        <div class="bg-green-500/20 border border-green-500/50 text-green-200 p-4 rounded-lg mb-6">
+                            <?= htmlspecialchars($success_message) ?>
+                        </div>
+                    <?php endif; ?>
+                    <?php if (!empty($errors)): ?>
+                        <div class="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
+                            <ul class="list-disc list-inside">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?= htmlspecialchars($error) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+
+                    <form id="signup-form" method="post" action="" class="space-y-6">
+                        <div>
+                            <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                            <input type="text" id="username" name="username" 
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                   placeholder="Enter your username" required>
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                            <input type="email" id="email" name="email" 
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                   placeholder="Enter your email address" required>
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                            <input type="password" id="password" name="password" 
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                   placeholder="Enter your password" required>
+                        </div>
+
+                        <div>
+                            <label for="repeat-password" class="block text-sm font-medium text-gray-300 mb-2">Repeat Password</label>
+                            <input type="password" id="repeat-password" name="repeat-password" 
+                                   class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                   placeholder="Repeat your password" required>
+                        </div>
+
+                        <button type="submit" 
+                                class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
+                            Sign Up
+                        </button>
+                    </form>
+
+                    <div class="mt-8 text-center">
+                        <p class="text-gray-300">
+                            Already have an account? 
+                            <a href="signin.php" class="text-secondary hover:text-accent font-semibold transition duration-200">Sign in</a>
+                        </p>
+                    </div>
                 </div>
-            <?php endif; ?>
-            <?php if (!empty($errors)): ?>
-                <div style="background:#f8d7da; color:#842029; padding:10px; border-radius:5px; margin-bottom:15px;">
-                    <ul>
-                        <?php foreach ($errors as $error): ?>
-                            <li><?= htmlspecialchars($error) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            <?php endif; ?>
-
-            <!-- Username Field -->
-            <div class="mb-4">
-                <label for="username" class="text-sm font-medium text-gray-300 block mb-2">USERNAME</label>
-                <input type="text" id="username" name="username" class="form-input-custom" placeholder="Enter your username" required>
             </div>
-
-            <!-- Email Address Field -->
-            <div class="mb-4">
-                <label for="email" class="text-sm font-medium text-gray-300 block mb-2">EMAIL ADDRESS</label>
-                <input type="email" id="email" name="email" class="form-input-custom" placeholder="Enter your email address" required>
-            </div>
-
-            <!-- Password Field -->
-            <div class="mb-4">
-                <label for="password" class="text-sm font-medium text-gray-300 block mb-2">PASSWORD</label>
-                <input type="password" id="password" name="password" class="form-input-custom" placeholder="Enter your password" required>
-            </div>
-
-            <!-- Repeat Password Field -->
-            <div class="mb-4">
-                <label for="repeat-password" class="text-sm font-medium text-gray-300 block mb-2">REPEAT PASSWORD</label>
-                <input type="password" id="repeat-password" name="repeat-password" class="form-input-custom" placeholder="Repeat your password" required>
-            </div>
-
-
-            <!-- Sign Up Button -->
-            <div class="pt-4">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-full transition duration-300 shadow-lg shadow-blue-500/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                    SIGN UP
-                </button>
-            </div>
-            
-            <!-- Message Box (Instead of alert()) -->
-            <div id="message-box" class="mt-4 text-center text-sm text-yellow-300 hidden"></div>
-        </form>
-
+        </main>
     </div>
-</div>
 
     <script>
-        function handleSignUp() {
-            const messageBox = document.getElementById('message-box');
-            const password = document.getElementById('password').value;
-            const repeatPassword = document.getElementById('repeat-password').value;
+        function toggleMobileMenu() {
+            const mobileNav = document.getElementById('mobile-nav');
+            const hamburger = document.querySelector('.hamburger-menu');
             
-            messageBox.classList.add('hidden');
-            messageBox.textContent = '';
-
-            if (password !== repeatPassword) {
-                messageBox.textContent = 'Error: Passwords do not match!';
-                messageBox.classList.remove('hidden');
-                return;
-            }
-
-            // In a real application, you would send the form data to a server here.
-            
-            messageBox.textContent = `Success! User data submitted for: ${document.getElementById('username').value}. (Check console for full data)`;
-            messageBox.classList.remove('hidden');
-            messageBox.classList.remove('text-yellow-300');
-            messageBox.classList.add('text-green-300');
-
-
-            // Log form data to console for demonstration
-            const formData = new FormData(document.getElementById('signup-form'));
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
-            console.log('Form Data:', data);
+            mobileNav.classList.toggle('hidden');
+            hamburger.classList.toggle('active');
+        }
+        
+        function changeLanguage(lang) {
+            // Language switching functionality
+            console.log('Language changed to:', lang);
         }
     </script>
 </body>
