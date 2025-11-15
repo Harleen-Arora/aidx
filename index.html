@@ -116,6 +116,7 @@
                     <a href="../index.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
                     <a href="#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
                     <a href="#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
+                    <a href="html/map.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
                     <a href="#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
                     <a href="php/signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
                     <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
@@ -129,6 +130,7 @@
                 <a href="../index.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
                 <a href="#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
                 <a href="#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
+                <a href="html/map.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
                 <a href="#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
                 <a href="php/signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
                 <a href="php/singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
@@ -145,6 +147,7 @@
                         <p class="text-xl text-gray-300 mb-8 leading-relaxed">Making giving faster, transparent, and more impactful. Connect donors, NGOs, volunteers, and people in need through real-time, technology-driven solutions.</p>
                         <div class="flex flex-col sm:flex-row gap-4">
                             <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Get Started</a>
+                            <a href="php/request.php" class="bg-secondary hover:bg-primary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Request Aid</a>
                             <a href="#mission" class="border-2 border-secondary text-secondary px-8 py-4 rounded-lg font-semibold hover:bg-secondary hover:text-white transition duration-300 text-center">Learn More</a>
                         </div>
                     </div>
@@ -331,6 +334,42 @@
         </footer>
     </div>
 
+    <!-- Floating Chatbot Icon -->
+    <div class="fixed bottom-6 right-6 z-50">
+        <button onclick="toggleChatbot()" class="bg-primary hover:bg-secondary text-white w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 transform hover:scale-110 animate-pulse">
+            <i class="fas fa-comments text-2xl"></i>
+        </button>
+    </div>
+
+    <!-- Chatbot Popup -->
+    <div id="chatbot-popup" class="fixed bottom-24 right-6 w-80 h-96 bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl z-50 hidden flex flex-col">
+        <div class="flex justify-between items-center p-4 border-b border-white/20">
+            <h3 class="text-white font-semibold text-sm">AID-X Assistant</h3>
+            <div class="flex items-center gap-2">
+                <select id="language-select" onchange="changeLanguage()" class="bg-white/20 backdrop-blur-md border border-white/30 rounded-lg px-2 py-1 text-white text-xs focus:outline-none focus:ring-2 focus:ring-secondary hover:bg-white/30 transition-all duration-200">
+                    <option value="en" class="bg-background text-white">English</option>
+                    <option value="hi" class="bg-background text-white">हिंदी</option>
+                </select>
+                <button onclick="toggleChatbot()" class="text-white hover:text-secondary transition-colors">
+                    <i class="fas fa-times text-sm"></i>
+                </button>
+            </div>
+        </div>
+        <div class="flex-1 p-3 overflow-y-auto" id="chat-messages">
+            <div class="bg-white/20 rounded-lg p-2 mb-2">
+                <p class="text-white text-xs">Hello! I'm your AID-X assistant. How can I help you today?</p>
+            </div>
+        </div>
+        <div class="p-3 border-t border-white/20">
+            <div class="flex gap-2">
+                <input type="text" id="chat-input" placeholder="Type your message..." class="flex-1 px-2 py-1 bg-white/20 border border-white/30 rounded text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-secondary text-xs">
+                <button onclick="sendMessage()" class="bg-primary hover:bg-secondary text-white px-2 py-1 rounded transition-colors">
+                    <i class="fas fa-paper-plane text-xs"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/responsive.js"></script>
     <script>
         function toggleMobileMenu() {
@@ -340,6 +379,73 @@
             mobileNav.classList.toggle('hidden');
             hamburger.classList.toggle('active');
         }
+
+        function toggleChatbot() {
+            const popup = document.getElementById('chatbot-popup');
+            popup.classList.toggle('hidden');
+        }
+
+        let currentLanguage = 'en';
+        
+        const messages = {
+            en: {
+                welcome: "Hello! I'm your AID-X assistant. How can I help you today?",
+                response: "Thank you for your message. Our team will assist you shortly with your inquiry about"
+            },
+            hi: {
+                welcome: "नमस्ते! मैं आपका AID-X सहायक हूं। आज मैं आपकी कैसे मदद कर सकता हूं?",
+                response: "आपके संदेश के लिए धन्यवाद। हमारी टीम जल्द ही आपकी पूछताछ में सहायता करेगी"
+            }
+        };
+        
+        function changeLanguage() {
+            const select = document.getElementById('language-select');
+            currentLanguage = select.value;
+            
+            // Update welcome message
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = `
+                <div class="bg-white/20 rounded-lg p-2 mb-2">
+                    <p class="text-white text-xs">${messages[currentLanguage].welcome}</p>
+                </div>
+            `;
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const messagesContainer = document.getElementById('chat-messages');
+            const message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                const userMsg = document.createElement('div');
+                userMsg.className = 'bg-primary/30 rounded-lg p-2 mb-2 ml-4';
+                userMsg.innerHTML = `<p class="text-white text-xs">${message}</p>`;
+                messagesContainer.appendChild(userMsg);
+                
+                // Add bot response
+                setTimeout(() => {
+                    const botMsg = document.createElement('div');
+                    botMsg.className = 'bg-white/20 rounded-lg p-2 mb-2 mr-4';
+                    botMsg.innerHTML = `<p class="text-white text-xs">${messages[currentLanguage].response} "${message}".</p>`;
+                    messagesContainer.appendChild(botMsg);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                }, 1000);
+                
+                input.value = '';
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+
+        // Send message on Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatInput = document.getElementById('chat-input');
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        });
     </script>
 </body>
 </html>

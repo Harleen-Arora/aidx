@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_role'] = $user['role'];
 
-                header("Location: dashboard.php");
+                header("Location: ../html/dashboard.html");
                 exit;
             } else {
                 $errors[] = "Invalid username or password.";
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <iframe src="../html/chatbot.html" class="chatbot-iframe"></iframe>
+
     
     <script>
         tailwind.config = {
@@ -147,16 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
             animation: fadeIn 1s ease-out;
         }
         
-        .chatbot-iframe {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 400px;
-            height: 600px;
-            border: none;
-            z-index: 9999;
-            pointer-events: auto;
-        }
+
         
         input, textarea, select {
             pointer-events: auto !important;
@@ -227,64 +218,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
             </div>
         </div>
 
-        <main class="relative z-30 flex-grow flex items-center justify-center p-4">
-            <div class="w-full max-w-md mx-auto">
-                <div class="bg-white/10 backdrop-blur-md p-8 rounded-3xl shadow-2xl border border-primary/50 relative z-40">
-                    <div class="text-center mb-8">
-                        <h1 class="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-                        <p class="text-gray-300">Sign in to your AID-X account</p>
+        <main class="relative z-30 flex-grow flex items-center justify-center">
+            <div class="w-full max-w-6xl mx-auto grid lg:grid-cols-2 min-h-[80vh]">
+                <!-- Left Side - Branding -->
+                <div class="hidden lg:flex flex-col justify-center items-center p-12 bg-white/5 backdrop-blur-md rounded-l-3xl">
+                    <div class="text-center">
+                        <div class="mb-8">
+                            <svg class="w-24 h-24 mx-auto text-secondary mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                            <h1 class="text-5xl font-bold text-white mb-4">AID-<span class="text-secondary">X</span></h1>
+                            <p class="text-xl text-gray-300 mb-8">Smart Humanitarian Support Platform</p>
+                        </div>
+                        <div class="space-y-4 text-left">
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-check-circle text-secondary mr-3"></i>
+                                <span>Connect donors with verified beneficiaries</span>
+                            </div>
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-check-circle text-secondary mr-3"></i>
+                                <span>Real-time tracking of relief operations</span>
+                            </div>
+                            <div class="flex items-center text-gray-300">
+                                <i class="fas fa-check-circle text-secondary mr-3"></i>
+                                <span>Transparent aid distribution</span>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <?php if (!empty($errors)): ?>
-                        <div class="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
-                            <ul class="list-disc list-inside">
-                                <?php foreach ($errors as $error): ?>
-                                    <li><?= htmlspecialchars($error) ?></li>
-                                <?php endforeach; ?>
-                            </ul>
+                <!-- Right Side - Login Form -->
+                <div class="flex items-center justify-center p-8 lg:p-12 bg-white/10 backdrop-blur-md rounded-r-3xl lg:rounded-l-none rounded-3xl">
+                    <div class="w-full max-w-md">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-bold text-white mb-2">Welcome Back</h2>
+                            <p class="text-gray-300">Sign in to your AID-X account</p>
                         </div>
-                    <?php endif; ?>
 
-                    <form method="post" action="" class="space-y-6">
-                        <div>
-                            <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username or Email</label>
-                            <div class="relative">
-                                <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input type="text" id="username" name="username" 
-                                       class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
-                                       placeholder="Enter your username or email" required>
+                        <?php if (!empty($errors)): ?>
+                            <div class="bg-red-500/20 border border-red-500/50 text-red-200 p-4 rounded-lg mb-6">
+                                <ul class="list-disc list-inside">
+                                    <?php foreach ($errors as $error): ?>
+                                        <li><?= htmlspecialchars($error) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
                             </div>
-                        </div>
+                        <?php endif; ?>
 
-                        <div>
-                            <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
-                            <div class="relative">
-                                <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input type="password" id="password" name="password" 
-                                       class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
-                                       placeholder="Enter your password" required>
+                        <form method="post" action="" class="space-y-6">
+                            <div>
+                                <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Username or Email</label>
+                                <div class="relative">
+                                    <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text" id="username" name="username" 
+                                           class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                           placeholder="Enter your username or email" required>
+                                </div>
                             </div>
+
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                                <div class="relative">
+                                    <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="password" id="password" name="password" 
+                                           class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                           placeholder="Enter your password" required>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between">
+                                <label class="flex items-center text-sm text-gray-300">
+                                    <input type="checkbox" name="remember" class="mr-2 rounded">
+                                    Remember me
+                                </label>
+                                <a href="#" class="text-sm text-secondary hover:text-accent transition duration-200">Forgot password?</a>
+                            </div>
+
+                            <button type="submit" 
+                                    class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
+                                Sign In
+                            </button>
+                        </form>
+
+                        <div class="mt-8 text-center">
+                            <p class="text-gray-300">
+                                Don't have an account? 
+                                <a href="singup.php" class="text-secondary hover:text-accent font-semibold transition duration-200">Sign up</a>
+                            </p>
                         </div>
-
-                        <div class="flex items-center justify-between">
-                            <label class="flex items-center text-sm text-gray-300">
-                                <input type="checkbox" name="remember" class="mr-2 rounded">
-                                Remember me
-                            </label>
-                            <a href="#" class="text-sm text-secondary hover:text-accent transition duration-200">Forgot password?</a>
-                        </div>
-
-                        <button type="submit" 
-                                class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
-                            Sign In
-                        </button>
-                    </form>
-
-                    <div class="mt-8 text-center">
-                        <p class="text-gray-300">
-                            Don't have an account? 
-                            <a href="singup.php" class="text-secondary hover:text-accent font-semibold transition duration-200">Sign up</a>
-                        </p>
                     </div>
                 </div>
             </div>

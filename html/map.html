@@ -3,145 +3,560 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Real-time Aid Request Map</title>
+<title>Map - AID-X: Smart Humanitarian Support Platform</title>
+<script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<iframe src="chatbot.html" 
-    style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;">
-</iframe>
-<nav class="navbar">
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="signin.php">Sign In</a></li>
-    <li><a href="singup.php">Sign Up</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
-    <li><a href="aidxForm.php">Aid Form</a></li>
-    <li><a href="map.html">Map</a></li>
+<link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-  </ul>
-</nav>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'primary': '#00b4d8',
+                    'secondary': '#48cae4',
+                    'accent': '#90e0ef',
+                    'background': '#003049'
+                },
+                fontFamily: {
+                    sans: ['Inter', 'sans-serif'],
+                },
+                backgroundImage: {
+                    'hero-pattern': "url('https://images.unsplash.com/photo-1543269865-cbe426643c99?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+                }
+            }
+        }
+    }
+</script>
 <style>
-  html, body {
-    height: 100%; margin: 0; font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #0F766E 0%, #0F766E  100%);
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-    padding-top: 1.5rem;
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+  
+  .hero-background {
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
   }
-  h1 {
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 7px rgba(0,0,0,0.6);
+  
+  .hamburger-menu {
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+  }
+  
+  .hamburger-line {
+      width: 25px;
+      height: 3px;
+      background-color: white;
+      margin: 3px 0;
+      transition: 0.3s;
+      border-radius: 2px;
+      display: block;
+  }
+  
+  @media (max-width: 767px) {
+      .hamburger-menu {
+          display: flex !important;
+      }
+  }
+  
+  .hamburger-menu.active .hamburger-line:nth-child(1) {
+      transform: rotate(-45deg) translate(-5px, 6px);
+  }
+  
+  .hamburger-menu.active .hamburger-line:nth-child(2) {
+      opacity: 0;
+  }
+  
+  .hamburger-menu.active .hamburger-line:nth-child(3) {
+      transform: rotate(45deg) translate(-5px, -6px);
+  }
+  
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+          transform: translateY(20px);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+  
+  .animate-fade-in {
+      animation: fadeIn 1s ease-out;
   }
   #map {
-    height: 90vh;
-    width: 95vw;
-    max-width: 960px;
-    border-radius: 16px;
-    box-shadow: 0 12px 48px rgba(37, 99, 235, 0.4);
-    border: 2px solid #3b82f6;
+    height: 80vh; border-radius: 16px; box-shadow: 0 12px 48px rgba(0,180,216,0.4); border: 2px solid #00b4d8;
   }
-   .navbar {
-    background-color: #0F766E; /* primary blue */
-    padding: 10px 20px;
+  #sidebar {
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(16px); border-radius: 16px; padding: 18px; box-sizing: border-box;
+    display: flex; flex-direction: column; overflow-y: auto; border: 1px solid rgba(255,255,255,0.2);
   }
-
-  .nav-links {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 0;
-    padding: 0;
+  #search-section {
+    margin-bottom: 28px; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 16px;
   }
-
-  .nav-links li {
-    margin: 0 15px;
+  #search-section h2 { margin:0 0 12px 0; font-size: 1.2rem; color: white; }
+  #searchBox {
+    display: flex; align-items: center; gap: 8px;
   }
-
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: color 0.3s ease;
+  #searchInput {
+    flex:1; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); font-size:1rem; min-width:0;
+    background: rgba(255,255,255,0.1); color: white;
   }
-
-  .nav-links a:hover {
-    color: #ffdd57; /* theme accent */
+  #searchInput::placeholder { color: rgba(255,255,255,0.7); }
+  #searchBtn { 
+    background: #00b4d8; color:white; border:none; font-weight:600; border-radius:8px; padding:10px 20px; cursor:pointer; transition: background 0.3s;
+  }
+  #searchBtn:hover { background:#48cae4; }
+  #resetBtn {
+    background:#ef4444; color:white; border:none; border-radius:8px; padding:10px 14px; cursor:pointer; font-size:1rem; transition: background 0.3s;
+  }
+  #resetBtn:hover { background:#dc2626; }
+  #active-section h2 { margin-top: 0; margin-bottom:15px; font-size: 1.25rem; color: white; }
+  .priority-section {
+    margin-bottom: 20px; border-left: 4px solid; padding-left: 10px;
+  }
+  .priority-section.high { border-left-color: #ef4444; }
+  .priority-section.medium { border-left-color: #f59e0b; }
+  .priority-section.low { border-left-color: #10b981; }
+  .priority-section h3 { 
+    margin: 0 0 10px 0; font-size: 1.1rem; font-weight: 700; color: white;
+  }
+  .no-problems {
+    text-align: center; color: rgba(255,255,255,0.7); font-style: italic; padding: 20px;
+  }
+  #sidebar div.problem {
+    padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.2); cursor: pointer; transition: background 0.3s; border-radius: 6px; margin-bottom: 8px;
+    background: rgba(255,255,255,0.05);
+  }
+  #sidebar div.problem:hover { background-color: rgba(255,255,255,0.1); }
+  #sidebar .field { margin-bottom: 4px; font-size: 0.95rem; color: rgba(255,255,255,0.9); }
+  #sidebar .field strong { color: #48cae4; }
+  #loading { text-align: center; color: white; font-style: italic; display: none; }
+  iframe {
+    position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;
+  }
+  @media (max-width: 768px) {
+    #container { flex-direction: column; }
+    #sidebar { width: 100%; height: auto; max-height: 50vh; }
+    nav.navbar ul.nav-links { flex-direction: column; }
   }
 </style>
 </head>
-<body>
+<body class="font-sans min-h-screen bg-gray-50">
 
-<h1>Real-time Aid Request Map</h1>
-<div id="map"></div>
+<div class="hero-background bg-hero-pattern min-h-screen flex flex-col relative">
+    <div class="absolute inset-0 bg-background opacity-80 backdrop-blur-sm pointer-events-none"></div>
 
+    <header class="relative z-10 bg-white/10 backdrop-blur-md border-b border-white/20">
+        <nav class="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
+            <div class="text-2xl md:text-3xl font-extrabold text-white tracking-wider flex items-center">
+                <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                </svg>
+                AID-<span class="text-secondary">X</span>
+            </div>
+
+            <div class="flex items-center space-x-2 lg:hidden">
+                <button class="p-2 bg-white bg-opacity-20 rounded-lg" onclick="toggleMobileMenu()" aria-label="Toggle menu">
+                    <div class="hamburger-menu">
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                        <span class="hamburger-line"></span>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="hidden lg:flex items-center space-x-4 xl:space-x-8">
+                <a href="../index.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
+                <a href="../index.html#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
+                <a href="../index.html#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
+                <a href="map.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
+                <a href="../index.html#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
+                <a href="../php/signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
+                <a href="../php/singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+            </div>
+
+        </nav>
+    </header>
+    
+    <div id="mobile-nav" class="hidden lg:hidden relative z-20 bg-white/10 backdrop-blur-md border-b border-white/20">
+        <div class="px-6 py-4 space-y-3">
+            <a href="../index.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
+            <a href="../index.html#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
+            <a href="../index.html#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
+            <a href="map.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
+            <a href="../index.html#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
+            <a href="../php/signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
+            <a href="../php/singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
+        </div>
+    </div>
+
+    <div class="relative z-30 flex-1 p-6">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">Real-time Aid Request Map</h1>
+            <p class="text-xl text-gray-300">Track and coordinate humanitarian aid in real-time</p>
+        </div>
+        
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-3">
+                <div id="map" class="w-full"></div>
+            </div>
+            <div class="lg:col-span-1">
+                <div id="sidebar">
+    <div id="search-section">
+      <h2>Search Aid Requests</h2>
+      <div id="searchBox">
+        <input type="text" id="searchInput" placeholder="Enter location (e.g., Delhi), aid type, name, etc.">
+        <button id="searchBtn">Search</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+    </div>
+    
+    <div class="mb-6">
+      <button id="addRequestBtn" class="w-full bg-primary hover:bg-secondary text-white font-semibold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
+        <i class="fas fa-plus mr-2"></i>Add Aid Request
+      </button>
+    </div>
+    
+    <div id="active-section">
+      <h2>Active Problems</h2>
+      <div id="problems-list">
+        <div id="loading">Loading active problems...</div>
+      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Aid Request Form -->
+<div id="aidRequestModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+  <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-white">Submit Aid Request</h2>
+        <button id="closeModal" class="text-white hover:text-secondary transition duration-200">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+      
+      <form id="aidRequestForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">User Type</label>
+          <select name="userType" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white">
+            <option value="">Select User Type</option>
+            <option value="NGO">NGO</option>
+            <option value="Volunteer">Volunteer</option>
+            <option value="Service Taker">Service Taker (Needy)</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+          <input type="text" name="fullname" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Enter your full name">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
+          <input type="tel" name="phone" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Enter phone number">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Address/Location</label>
+          <input type="text" name="address" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Enter your address">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Aid Type</label>
+          <select name="aidtype" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white">
+            <option value="">Select Aid Type</option>
+            <option value="Food">Food</option>
+            <option value="Medical">Medical</option>
+            <option value="Shelter">Shelter</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Education">Education</option>
+            <option value="Volunteer">Volunteer Support</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Emergency Level</label>
+          <select name="emergency_level" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white">
+            <option value="">Select Priority</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">Details</label>
+          <textarea name="details" rows="3" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Describe your aid request in detail"></textarea>
+        </div>
+        
+        <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
+          Submit Request
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
 <script>
-// Initialize map centered on India
 const map = L.map('map').setView([23.5937, 80.9629], 5);
-
-// OpenStreetMap tiles
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
   attribution: '&copy; OpenStreetMap contributors',
   maxZoom: 18
 }).addTo(map);
 
-// Red marker icon
-const redIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-  shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
+const levelIcons = {
+  'Low': 'green',
+  'Medium': 'orange',
+  'High': 'red'
+};
+
+function createColoredIcon(color) {
+  return new L.Icon({
+    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25,41], iconAnchor: [12,41], popupAnchor: [1,-34], shadowSize: [41,41]
+  });
+}
+
+let allRequests = [];
+let allMarkers = [];
+
+async function fetchRequests() {
+  try {
+    const response = await fetch('request.php');
+    if(!response.ok) throw new Error(response.statusText);
+    const data = await response.json();
+    console.log('Backend data loaded:', data);
+    const mockData = [
+      {fullname: "John Doe", address: "Delhi", latitude: 28.6139, longitude: 77.2090, aidtype: "Food", details: "Urgent ration needed", type: "High", phone: "9876543210", emergency_level: "High"},
+      {fullname: "Jane Smith", address: "Ludhiana", latitude: 30.9010, longitude: 75.8573, aidtype: "Medical", details: "Blood donation required", type: "Medium", phone: "9876543211", emergency_level: "Medium"},
+      {fullname: "Test User", address: "Mumbai", latitude: 19.0760, longitude: 72.8777, aidtype: "Volunteer", details: "Help with relief", type: "Low", phone: "9876543212", emergency_level: "Low"}
+    ];
+    return [...data, ...mockData];
+  } catch (error) {
+    console.error('Error fetching requests:', error);
+    return [
+      {fullname: "John Doe", address: "Delhi", latitude: 28.6139, longitude: 77.2090, aidtype: "Food", details: "Urgent ration needed", type: "High", phone: "9876543210", emergency_level: "High"},
+      {fullname: "Jane Smith", address: "Ludhiana", latitude: 30.9010, longitude: 75.8573, aidtype: "Medical", details: "Blood donation required", type: "Medium", phone: "9876543211", emergency_level: "Medium"},
+      {fullname: "Test User", address: "Mumbai", latitude: 19.0760, longitude: 72.8777, aidtype: "Volunteer", details: "Help with relief", type: "Low", phone: "9876543212", emergency_level: "Low"}
+    ];
+  }
+}
+
+function renderMarkers(requests) {
+  allMarkers.forEach(m => map.removeLayer(m));
+  allMarkers = [];
+  const problemsList = document.getElementById('problems-list');
+  problemsList.innerHTML = '';
+  const loadingEl = document.getElementById('loading');
+  loadingEl.style.display = 'none';
+
+  if (requests.length === 0) {
+    problemsList.innerHTML = '<div class="no-problems">No active problems found. Try searching or adding one!</div>';
+    return;
+  }
+
+  const grouped = { 'High': [], 'Medium': [], 'Low': [] };
+
+  requests.forEach(req => {
+    const level = (req.emergency_level || req.type || 'Low').toString().toLowerCase();
+    const capLevel = level.charAt(0).toUpperCase() + level.slice(1);
+    grouped[capLevel] = grouped[capLevel] || [];
+    grouped[capLevel].push(req);
+
+    const iconColor = levelIcons[capLevel] || 'green';
+    const icon = createColoredIcon(iconColor);
+    const marker = L.marker([req.latitude, req.longitude], {icon}).addTo(map);
+    const popupContent = `
+      <b>Name:</b> ${req.fullname}<br/>
+      <b>Location:</b> ${req.address || '[No address]'}<br/>
+      <b>Aid Type:</b> ${req.aidtype}<br/>
+      <b>Emergency Level:</b> ${capLevel}<br/>
+      <b>Details:</b> ${req.details}<br/>
+      <b>Contact/Availability:</b> ${req.phone || '[No Contact]'}
+    `;
+    marker.bindPopup(popupContent);
+    allMarkers.push(marker);
+  });
+
+  ['High', 'Medium', 'Low'].forEach(level => {
+    if (grouped[level].length === 0) return;
+    const section = document.createElement('div');
+    section.className = `priority-section ${level.toLowerCase()}`;
+    const levelHeading = document.createElement('h3');
+    levelHeading.innerText = `${level} Priority (${grouped[level].length})`;
+    section.appendChild(levelHeading);
+
+    grouped[level].forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'problem';
+      div.innerHTML = `
+        <div class="field"><strong>Name:</strong> ${item.fullname}</div>
+        <div class="field"><strong>Location:</strong> ${item.address || '[No address]'}</div>
+        <div class="field"><strong>Aid Type:</strong> ${item.aidtype}</div>
+        <div class="field"><strong>Details:</strong> ${item.details}</div>
+        <div class="field"><strong>Contact:</strong> ${item.phone || '[No Contact]'}</div>
+      `;
+      div.onclick = () => { map.flyTo([item.latitude, item.longitude], 15); };
+      section.appendChild(div);
+    });
+    problemsList.appendChild(section);
+  });
+}
+
+function doSearch() {
+  const val = document.getElementById('searchInput').value.trim();
+  if (val === "") {
+    renderMarkers(allRequests);
+    map.setView([23.5937, 80.9629], 5);
+    return;
+  }
+  const loadingEl = document.getElementById('loading');
+  loadingEl.style.display = 'block';
+  loadingEl.innerText = 'Searching and zooming...';
+
+  const zoomPromise = fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val)}&countrycodes=in&limit=1&addressdetails=1`)
+    .then(res => res.json())
+    .then(locations => {
+      if (locations && locations.length > 0) {
+        const first = locations[0];
+        const lat = parseFloat(first.lat);
+        const lon = parseFloat(first.lon);
+        map.setView([lat, lon], 13);
+      } else {
+        map.setView([28.6139, 77.2090], 10);
+      }
+    })
+    .catch(err => {
+      console.error('Geocoding failed:', err);
+      map.setView([28.6139, 77.2090], 10);
+    });
+
+  const searchStr = val.toLowerCase();
+  const filtered = allRequests.filter(obj => 
+    Object.values(obj).some(field => 
+      field && typeof field === 'string' && field.toLowerCase().includes(searchStr)
+    )
+  );
+  renderMarkers(filtered);
+
+  Promise.all([zoomPromise]).then(() => {
+    loadingEl.style.display = 'none';
+  });
+}
+
+document.getElementById('searchBtn').onclick = doSearch;
+document.getElementById('searchInput').addEventListener('keydown', function(e) { 
+  if(e.key === 'Enter') doSearch(); 
+});
+document.getElementById('resetBtn').onclick = function() {
+  document.getElementById('searchInput').value = '';
+  renderMarkers(allRequests);
+  map.setView([23.5937, 80.9629], 5);
+};
+
+L.Control.geocoder({ defaultMarkGeocode: false })
+  .on('markgeocode', function(e) {
+    const bbox = e.geocode.bbox;
+    map.fitBounds(bbox);
+  }).addTo(map);
+
+map.pm.addControls({
+  position: 'topleft', drawMarker: true, drawPolygon: false, drawPolyline: false, drawRectangle: false,
+  drawCircle: false, drawCircleMarker: false, editMode: true, dragMode: true, cutPolygon: false, removalMode: true,
 });
 
-// Demo markers data
-const demoMarkers = [
-  {
-    lat: 28.6139,
-    lon: 77.2090,
-    name: 'John Doe',
-    type: 'Request',
-    aidType: 'Food',
-    details: 'Needs food kits for family',
-    phone: '+911234567890',
-  },
-  {
-    lat: 19.0760,
-    lon: 72.8777,
-    name: 'Mary Smith',
-    type: 'Offer',
-    aidType: 'Medical',
-    details: 'Offering first aid kits and medicines',
-    phone: '+919876543210',
-  },
-  {
-    lat: 12.9716,
-    lon: 77.5946,
-    name: 'Rajesh Kumar',
-    type: 'Volunteer',
-    aidType: 'Volunteer Support',
-    details: 'Can help with shelter and crowd management',
-    phone: '+919999888777',
+map.on('pm:create', e => {
+  if (e.shape === 'Marker') {
+    const marker = e.layer;
+    const form = `
+      <form id="markerForm">
+        <label>Name: <input type="text" name="fullname" required></label><br/>
+        <label>Aid Type: <input type="text" name="aidtype" required></label><br/>
+        <label>Emergency Level:
+          <select name="emergency_level" required>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </label><br/>
+        <label>Details:<br/><textarea name="details" rows="3" required></textarea></label><br/>
+        <label>Contact/Availability: <input type="text" name="phone"></label><br/>
+        <button type="submit">Submit</button>
+      </form>
+    `;
+    marker.bindPopup(form).openPopup();
+    setTimeout(() => {
+      const formElement = document.getElementById('markerForm');
+      if (formElement) {
+        formElement.addEventListener('submit', function(event) {
+          event.preventDefault();
+          const formData = new FormData(event.target);
+          const values = Object.fromEntries(formData.entries());
+          values.latitude = marker.getLatLng().lat;
+          values.longitude = marker.getLatLng().lng;
+          const newIcon = createColoredIcon(levelIcons[values.emergency_level] || 'green');
+          marker.setIcon(newIcon);
+          marker.closePopup();
+          alert('Aid request submitted! Refresh the map to see updates.');
+        });
+      }
+    }, 150);
   }
-];
+});
 
-// Add markers with red icons
-demoMarkers.forEach(data => {
-  const marker = L.marker([data.lat, data.lon], { icon: redIcon }).addTo(map);
-  const popupContent = `
-    <b>Type:</b> ${data.type}<br>
-    <b>Name:</b> ${data.name}<br>
-    <b>Aid Type:</b> ${data.aidType}<br>
-    <b>Details:</b> ${data.details}<br>
-    <b>Contact:</b> ${data.phone}
-  `;
-  marker.bindPopup(popupContent);
+fetchRequests().then(results => {
+  allRequests = results;
+  renderMarkers(results);
+});
+
+function toggleMobileMenu() {
+    const mobileNav = document.getElementById('mobile-nav');
+    const hamburger = document.querySelector('.hamburger-menu');
+    
+    mobileNav.classList.toggle('hidden');
+    hamburger.classList.toggle('active');
+}
+
+// Modal functionality
+document.getElementById('addRequestBtn').onclick = function() {
+    document.getElementById('aidRequestModal').classList.remove('hidden');
+};
+
+document.getElementById('closeModal').onclick = function() {
+    document.getElementById('aidRequestModal').classList.add('hidden');
+};
+
+document.getElementById('aidRequestModal').onclick = function(e) {
+    if (e.target === this) {
+        this.classList.add('hidden');
+    }
+};
+
+document.getElementById('aidRequestForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const values = Object.fromEntries(formData.entries());
+    
+    console.log('Aid request submitted:', values);
+    alert('Aid request submitted successfully! It will be reviewed and added to the map.');
+    
+    document.getElementById('aidRequestModal').classList.add('hidden');
+    e.target.reset();
 });
 </script>
-
 </body>
 </html>
