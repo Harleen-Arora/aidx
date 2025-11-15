@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AID-X Floating Chatbot</title>
+  <style>
+    /* Responsive Chatbot Styles */
+    #chatbot-float {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 58px; 
+      height: 58px;
+      background: linear-gradient(135deg, #0F766E 100%);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      box-shadow: 0 4px 32px rgba(15, 118, 110, 0.28);
+      font-size: 28px;
+      cursor: pointer;
+      z-index: 10001;
+      display: flex; 
+      align-items: center; 
+      justify-content: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    #chatbot-float:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 40px rgba(15, 118, 110, 0.4);
+    }
+    
+    #chatbox-popup {
+      position: fixed;
+      bottom: 90px;
+      right: 24px;
+      width: 360px;
+      height: 520px;
+      background: #e7e8ea;
+      color: #eee;
+      border-radius: 16px;
+      box-shadow: 0 4px 32px rgba(20, 30, 50, 0.42);
+      display: none; 
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 11000;
+      transition: all 0.3s ease;
+    }
+    
+    /* Mobile Responsive Styles */
+    @media (max-width: 768px) {
+      #chatbot-float {
+        width: 50px;
+        height: 50px;
+        bottom: 20px;
+        right: 20px;
+        font-size: 24px;
+      }
+      
+      #chatbox-popup {
+        width: calc(100vw - 40px);
+        height: calc(100vh - 120px);
+        bottom: 80px;
+        right: 20px;
+        left: 20px;
+        max-width: 360px;
+        max-height: 500px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #chatbox-popup {
+        width: calc(100vw - 20px);
+        height: calc(100vh - 100px);
+        bottom: 70px;
+        right: 10px;
+        left: 10px;
+        border-radius: 12px;
+      }
+    }
+    
+    #chatbox-header {
+      background: linear-gradient(90deg, #0F766E 85%);
+      padding: 18px;
+      font-weight: 600; 
+      font-size: 16px;
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between;
+      color: #f2f0f0; 
+      letter-spacing: 0.02em;
+    }
+    
+    @media (max-width: 480px) {
+      #chatbox-header {
+        padding: 14px;
+        font-size: 14px;
+      }
+    }
+    
+    #chatbox-close {
+      cursor: pointer; 
+      font-size: 20px; 
+      color: #fff; 
+      opacity: 0.86;
+      padding: 4px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    
+    #chatbox-close:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    #preset-questions {
+      padding: 12px 16px;
+      background: #f0f4ff;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      border-bottom: 1px solid #c3d1ff;
+      max-height: 140px;
+      overflow-y: auto;
+    }
+    
+    @media (max-width: 480px) {
+      #preset-questions {
+        padding: 10px 12px;
+        gap: 6px;
+        max-height: 120px;
+      }
+    }
+    
+    #preset-questions button {
+      background: #0F766E;
+      color: rgb(246, 239, 239);
+      border: none;
+      border-radius: 20px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 13px;
+      min-width: 45%;
+      box-shadow: 0 3px 8px rgba(15, 118, 110, 0.3);
+      transition: all 0.3s ease;
+      touch-action: manipulation;
+    }
+    
+    @media (max-width: 480px) {
+      #preset-questions button {
+        padding: 6px 12px;
+        font-size: 12px;
+        min-width: 48%;
+        border-radius: 16px;
+      }
+    }
+    
+    #preset-questions button:hover,
+    #preset-questions button:active {
+      background-color: #14B8A6;
+      box-shadow: 0 5px 15px rgba(15, 118, 110, 0.5);
+      transform: translateY(-1px);
+    }
+    
+    #chatbox-messages {
+      flex: 1; 
+      padding: 16px; 
+      overflow-y: auto;
+      background: #f4f4f6; 
+      font-size: 15px;
+      display: flex; 
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    @media (max-width: 480px) {
+      #chatbox-messages {
+        padding: 12px;
+        font-size: 14px;
+      }
+    }
+    
+    .message {
+      margin-bottom: 12px; 
+      padding: 10px 14px; 
+      border-radius: 20px; 
+      max-width: 84%;
+      word-break: break-word;
+      line-height: 1.4;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @media (max-width: 480px) {
+      .message {
+        padding: 8px 12px;
+        margin-bottom: 10px;
+        max-width: 90%;
+        border-radius: 16px;
+      }
+    }
+    
+    .message.user {
+      background: #0F766E;
+      color: #fff; 
+      align-self: flex-end; 
+      margin-left: auto;
+      box-shadow: 0 2px 6px rgba(15, 118, 110, 0.3);
+    }
+    
+    .message.bot {
+      background: #2d2f38; 
+      color: #eaeaea; 
+      align-self: flex-start; 
+      margin-right: auto;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+    
+    #chatbox-input-area {
+      padding: 13px 16px; 
+      border-top: 1px solid #22242a; 
+      background: #0F766E;
+      display: flex; 
+      gap: 10px;
+      align-items: center;
+    }
+    
+    @media (max-width: 480px) {
+      #chatbox-input-area {
+        padding: 10px 12px;
+        gap: 8px;
+      }
+    }
+    
+    #chatbox-input {
+      flex: 1; 
+      padding: 11px 12px; 
+      border-radius: 20px; 
+      border: 1.5px solid #1a1a1c;
+      font-size: 15px; 
+      background: #e8e8ec; 
+      color: #333;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    
+    @media (max-width: 480px) {
+      #chatbox-input {
+        padding: 9px 10px;
+        font-size: 14px;
+        border-radius: 16px;
+      }
+    }
+    
+    #chatbox-input:focus {
+      border-color: #14B8A6;
+    }
+    
+    #chatbox-send-btn {
+      background: linear-gradient(135deg, #e8e8ec 70%);
+      border: none; 
+      border-radius: 20px; 
+      padding: 10px 18px; 
+      color: #252526;
+      font-weight: bold; 
+      cursor: pointer;
+      transition: all 0.3s ease;
+      touch-action: manipulation;
+      min-width: 60px;
+    }
+    
+    @media (max-width: 480px) {
+      #chatbox-send-btn {
+        padding: 9px 14px;
+        border-radius: 16px;
+        min-width: 50px;
+      }
+    }
+    
+    #chatbox-send-btn:hover,
+    #chatbox-send-btn:active {
+      background: #14B8A6;
+      color: white;
+      transform: translateY(-1px);
+    }
+    
+    #languageSelect {
+      margin: 10px;
+      width: 100px;
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      background: white;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    
+    @media (max-width: 480px) {
+      #languageSelect {
+        margin: 8px;
+        width: 90px;
+        padding: 5px;
+        font-size: 13px;
+      }
+    }
+    
+    #languageSelect:focus {
+      border-color: #0F766E;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Scrollbar styling */
+    #chatbox-messages::-webkit-scrollbar,
+    #preset-questions::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    #chatbox-messages::-webkit-scrollbar-track,
+    #preset-questions::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    
+    #chatbox-messages::-webkit-scrollbar-thumb,
+    #preset-questions::-webkit-scrollbar-thumb {
+      background: #0F766E;
+      border-radius: 3px;
+    }
+    
+    #chatbox-messages::-webkit-scrollbar-thumb:hover,
+    #preset-questions::-webkit-scrollbar-thumb:hover {
+      background: #14B8A6;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Floating Chat Button -->
+<div id="chatbot-float" title="Chat with AID-X 🌟">💬</div>
+
+<!-- Chatbox Popup -->
+<div id="chatbox-popup" aria-label="Chatbox">
+  <div id="chatbox-header">
+    <span>AID-X Chatbot</span>
+    <span id="chatbox-close">&times;</span>
+  </div>
+
+  <!-- Language Selection Dropdown -->
+  <select id="languageSelect" aria-label="Select Language">
+    <option value="en" selected>English</option>
+    <option value="hi">हिन्दी</option>
+  </select>
+
+  <!-- Preset questions buttons container -->
+  <div id="preset-questions" aria-label="Quick Questions"></div>
+
+  <!-- Messages -->
+  <div id="chatbox-messages" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+  <!-- Input Area -->
+  <div id="chatbox-input-area">
+    <input id="chatbox-input" type="text" placeholder="Type your message…" aria-label="Message input" />
+    <button id="chatbox-send-btn" aria-label="Send Message">Send</button>
+  </div>
+</div>
+
+<script>
+  const chatFloatBtn = document.getElementById('chatbot-float');
+  const chatPopup = document.getElementById('chatbox-popup');
+  const chatCloseBtn = document.getElementById('chatbox-close');
+  const messagesDiv = document.getElementById('chatbox-messages');
+  const chatInput = document.getElementById('chatbox-input');
+  const sendBtn = document.getElementById('chatbox-send-btn');
+  const presetQuestionsDiv = document.getElementById('preset-questions');
+  const languageSelect = document.getElementById('languageSelect');
+
+  const presetQuestionsEn = [
+    'What is AID X?',
+    'Why was AID X made?',
+    'What are the goals of AID X?',
+    'What does AID X want to achieve?',
+    'Who can access AID X?',
+    'How does AID X work?',
+    'How to put requests on AID X?',
+    'How to login or sign up?',
+  ];
+  
+  const presetQuestionsHi = [
+    'एड-एक्स क्या है?',
+    'एड-एक्स क्यों बनाया गया?',
+    'एड-एक्स के लक्ष्य क्या हैं?',
+    'एड-एक्स क्या हासिल करना चाहता है?',
+    'कौन एड-एक्स का उपयोग कर सकता है?',
+    'एड-एक्स कैसे काम करता है?',
+    'एड-एक्स पर अनुरोध कैसे भेजें?',
+    'लॉगिन या साइन अप कैसे करें?',
+  ];
+
+  function addMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender);
+    msgDiv.textContent = text;
+    messagesDiv.appendChild(msgDiv);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+  }
+
+  function renderPresetQuestions() {
+    presetQuestionsDiv.innerHTML = '';
+    let questions = languageSelect.value === 'hi' ? presetQuestionsHi : presetQuestionsEn;
+    questions.forEach(question => {
+      const btn = document.createElement('button');
+      btn.textContent = question;
+      btn.addEventListener('click', () => sendMessageInternal(question));
+      presetQuestionsDiv.appendChild(btn);
+    });
+  }
+
+  async function sendMessageInternal(text) {
+    if (!text.trim()) return;
+    const language = languageSelect.value || 'en';
+
+    addMessage(text, 'user');
+    chatInput.value = '';
+    
+    // Show typing indicator
+    const typingMsg = document.createElement('div');
+    typingMsg.classList.add('message', 'bot');
+    typingMsg.textContent = '...';
+    typingMsg.id = 'typing-indicator';
+    messagesDiv.appendChild(typingMsg);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    try {
+      const response = await fetch('http://localhost:8000/chat', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ message: text, language: language }),
+      });
+      const data = await response.json();
+      
+      // Remove typing indicator and add actual response
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+      addMessage(data.reply, 'bot');
+    } catch (error) {
+      // Remove typing indicator and show error message
+      const typingIndicator = document.getElementById('typing-indicator');
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+      const errorMsg = language === 'hi'
+        ? "माफ़ करें, अभी मैं जवाब नहीं दे पा रहा हूँ।"
+        : "Sorry, I am unable to respond now.";
+      addMessage(errorMsg, 'bot');
+    }
+  }
+
+  // Event Listeners
+  sendBtn.addEventListener('click', () => sendMessageInternal(chatInput.value.trim()));
+
+  chatInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      sendMessageInternal(chatInput.value.trim());
+    }
+  });
+
+  chatFloatBtn.addEventListener('click', () => {
+    const isVisible = chatPopup.style.display === 'flex';
+    chatPopup.style.display = isVisible ? 'none' : 'flex';
+    
+    if (!isVisible) {
+      chatInput.focus();
+    }
+  });
+
+  chatCloseBtn.addEventListener('click', () => {
+    chatPopup.style.display = 'none';
+  });
+
+  languageSelect.addEventListener('change', () => {
+    renderPresetQuestions();
+  });
+
+  // Close chatbot when clicking outside (for mobile)
+  document.addEventListener('click', (e) => {
+    if (!chatPopup.contains(e.target) && !chatFloatBtn.contains(e.target)) {
+      if (chatPopup.style.display === 'flex') {
+        chatPopup.style.display = 'none';
+      }
+    }
+  });
+
+  // Handle touch events for better mobile experience
+  let touchStartY = 0;
+  chatPopup.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+  });
+
+  chatPopup.addEventListener('touchmove', (e) => {
+    // Prevent scrolling when at the top or bottom of messages
+    const messagesContainer = messagesDiv;
+    const isAtTop = messagesContainer.scrollTop === 0;
+    const isAtBottom = messagesContainer.scrollTop >= messagesContainer.scrollHeight - messagesContainer.clientHeight;
+    
+    if ((isAtTop && e.touches[0].clientY > touchStartY) || 
+        (isAtBottom && e.touches[0].clientY < touchStartY)) {
+      e.preventDefault();
+    }
+  });
+
+  // Initialize preset questions on page load
+  renderPresetQuestions();
+  
+  // Add welcome message
+  setTimeout(() => {
+    const welcomeMsg = languageSelect.value === 'hi' 
+      ? "नमस्ते! मैं AID-X चैटबॉट हूँ। मैं आपकी कैसे मदद कर सकता हूँ?"
+      : "Hello! I'm the AID-X chatbot. How can I help you today?";
+    addMessage(welcomeMsg, 'bot');
+  }, 500);
+</script>
+
+</body>
+</html>
