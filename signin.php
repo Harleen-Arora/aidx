@@ -10,7 +10,7 @@ define('DB_CHARSET', 'utf8mb4');
 $errors = [];
 
 try {
-    $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
+    $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
     $pdo = new PDO($dsn, DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -54,13 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 ?>
 
 <?php if (!empty($success_message)): ?>
-    <div class="text-green-400 mb-4"><?=htmlspecialchars($success_message)?></div>
+    <div class="text-green-400 mb-4"><?= htmlspecialchars($success_message) ?></div>
 <?php endif; ?>
 <?php if (!empty($errors)): ?>
     <div class="text-red-400 mb-4">
         <ul>
             <?php foreach ($errors as $error): ?>
-                <li><?=htmlspecialchars($error)?></li>
+                <li><?= htmlspecialchars($error) ?></li>
             <?php endforeach; ?>
         </ul>
     </div>
@@ -69,55 +69,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In to AID-X</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
-   
-
-  </ul>
-</nav>
+    <iframe src="chatbot.html"
+        style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
     <style>
-         .navbar {
-    background-color: #0F766E; /* primary blue */
-    padding: 10px 20px;
-  }
+        .navbar {
+            background-color: #0F766E;
+            /* primary blue */
+            padding: 10px 20px;
+        }
 
-  .nav-links {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 0;
-    padding: 0;
-  }
+        .nav-links {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+        }
 
-  .nav-links li {
-    margin: 0 15px;
-  }
+        .nav-links li {
+            margin: 0 15px;
+        }
 
-  .nav-links a {
-    color: white;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: color 0.3s ease;
-  }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
 
-  .nav-links a:hover {
-    color: #ffdd57; /* theme accent */
-  }
+        .nav-links a:hover {
+            color: #ffdd57;
+            /* theme accent */
+        }
+
         /* --- CSS Styling (style.css content merged here) --- */
         :root {
-            --primary-color: #007bff; /* Bright blue for accents */
+            --primary-color: #007bff;
+            /* Bright blue for accents */
             --primary-hover: #0056b3;
-            --background-dark: #1e1e2f; /* Dark background (AID-X theme) */
-            --surface-dark: #2a2a44;   /* Slightly lighter surface for the form */
-            --text-light: #f0f0f0;     /* Light text */
-            --text-muted: #a0a0b0;     /* Muted text for links/hints */
-            --border-color: #444466;   /* Subtle border */
+            --background-dark: #1e1e2f;
+            /* Dark background (AID-X theme) */
+            --surface-dark: #2a2a44;
+            /* Slightly lighter surface for the form */
+            --text-light: #f0f0f0;
+            /* Light text */
+            --text-muted: #a0a0b0;
+            /* Muted text for links/hints */
+            --border-color: #444466;
+            /* Subtle border */
         }
 
         * {
@@ -130,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--background-dark);
             color: var(--text-light);
-            display: flex;
+            /* display: flex; */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -139,8 +146,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         /* --- Container Layout --- */
         .signin-container {
             display: flex;
-            width: 80%;
-            max-width: 1200px;
+            justify-content: center;
+            align-items: center;
+            /* width: 80%;
+            max-width: 1200px; */
+            margin: 100px 70px;
             background-color: var(--surface-dark);
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -150,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         /* --- Branding Side (Left) --- */
         .branding-side {
             flex: 1;
-            background: linear-gradient(135deg, #1e1e2f, #3a3a5a);
+            /* background: linear-gradient(135deg, #1e1e2f, #3a3a5a); */
             padding: 60px 40px;
             display: flex;
             flex-direction: column;
@@ -190,8 +200,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         }
 
         @keyframes pulse {
-            from { transform: scale(0.9); opacity: 0.15; }
-            to { transform: scale(1.1); opacity: 0.25; }
+            from {
+                transform: scale(0.9);
+                opacity: 0.15;
+            }
+
+            to {
+                transform: scale(1.1);
+                opacity: 0.25;
+            }
         }
 
 
@@ -223,7 +240,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
         .input-group input {
             width: 100%;
-            padding: 12px 12px 12px 40px; /* Adjust padding for icon */
+            padding: 12px 12px 12px 40px;
+            /* Adjust padding for icon */
             background-color: var(--surface-dark);
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -313,7 +331,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
             content: '';
             position: absolute;
             top: 50%;
-            width: 50px; /* Length of the line */
+            width: 50px;
+            /* Length of the line */
             height: 1px;
             background-color: var(--border-color);
         }
@@ -351,12 +370,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         }
 
         .social-btn:hover {
-            background-color: #383857; /* Slightly darker hover */
+            background-color: #383857;
+            /* Slightly darker hover */
             border-color: var(--primary-color);
         }
 
-        .social-btn.google { color: #db4437; } /* Google brand color for icon */
-        .social-btn.github { color: #fff; }    /* White for GitHub icon */
+        .social-btn.google {
+            color: #db4437;
+        }
+
+        /* Google brand color for icon */
+        .social-btn.github {
+            color: #fff;
+        }
+
+        /* White for GitHub icon */
 
 
         /* Sign Up Link */
@@ -385,7 +413,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
             }
 
             .branding-side {
-                display: none; /* Hide the visual side on smaller screens */
+                display: none;
+                /* Hide the visual side on smaller screens */
             }
 
             .form-side {
@@ -394,39 +423,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         }
     </style>
 </head>
+
 <body>
-     <nav class="navbar">
-  <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="signin.php">Sign In</a></li>
-    <li><a href="singup.php">Sign Up</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
-    <li><a href="aidxForm.php">Aid Form</a></li>
-    <li><a href="map.html">Map</a></li>
+    <nav class="navbar">
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="signin.php">Sign In</a></li>
+            <li><a href="singup.php">Sign Up</a></li>
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="aidxForm.php">Aid Form</a></li>
+            <li><a href="map.html">Map</a></li>
+        </ul>
+    </nav>
+
     <div class="signin-container">
-        
+
         <div class="branding-side">
-            <div class="logo"> <h2>AID-X></h2></div>
+            <div class="logo">
+                <h2>AID-X></h2>
+            </div>
             <h1>SMART GIVING TIMELY LIVING</h1>
             <p>Sign in to AID-X to donate,volunteer, or receive suooirt secureky.</p>
             <div class="illustration-placeholder">
-                </div>
+            </div>
         </div>
 
         <div class="form-side">
             <form class="signin-form" method="post" action="">
                 <h2>Welcome Back</h2>
                 <?php if (!empty($errors)): ?>
-  <div style="background:#f8d7da; color:#842029; padding:10px; border-radius:5px; margin-bottom:15px;">
-    <ul>
-      <?php foreach ($errors as $error): ?>
-        <li><?= htmlspecialchars($error) ?></li>
-      <?php endforeach; ?>
-    </ul>
-  </div>
-<?php endif; ?>
+                    <div style="background:#f8d7da; color:#842029; padding:10px; border-radius:5px; margin-bottom:15px;">
+                        <ul>
+                            <?php foreach ($errors as $error): ?>
+                                <li><?= htmlspecialchars($error) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endif; ?>
 
-                
+
                 <div class="input-group">
                     <i class="fas fa-user icon"></i>
                     <input type="text" id="username" placeholder="Username or Email" required>
@@ -436,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                     <i class="fas fa-lock icon"></i>
                     <input type="password" id="password" placeholder="Password" required>
                 </div>
-                
+
                 <div class="form-options">
                     <label>
                         <input type="checkbox" name="remember"> Remember Me
@@ -447,10 +482,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                 <button type="submit" class="signin-button">Sign In</button>
 
                 <div class="social-login-separator">
-                   
+
                 </div>
 
-                
+
 
                 <p class="signup-link">
                     Don't have an account? <a href="#">Create an Account</a>
@@ -460,4 +495,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
     </div>
 </body>
+
 </html>
