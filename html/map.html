@@ -102,10 +102,20 @@
     display: flex; align-items: center; gap: 8px;
   }
   #searchInput {
-    flex:1; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.2); font-size:1rem; min-width:0;
-    background: rgba(255,255,255,0.1); color: white;
+    flex:1; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.3); font-size:1rem; min-width:0;
+    background: rgba(0,0,0,0.3); color: white; backdrop-filter: blur(8px); cursor: text;
+    position: relative; z-index: 10; pointer-events: auto;
   }
   #searchInput::placeholder { color: rgba(255,255,255,0.7); }
+  #searchInput:focus {
+    outline: none; border-color: #00b4d8; background: rgba(0,0,0,0.4); z-index: 20;
+  }
+  #searchInput:hover {
+    background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.5);
+  }
+  #searchBox {
+    display: flex; align-items: center; gap: 8px; position: relative; z-index: 5;
+  }
   #searchBtn { 
     background: #00b4d8; color:white; border:none; font-weight:600; border-radius:8px; padding:10px 20px; cursor:pointer; transition: background 0.3s;
   }
@@ -245,57 +255,38 @@
       
       <form id="aidRequestForm" class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">User Type</label>
-          <select name="userType" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white">
-            <option value="">Select User Type</option>
-            <option value="NGO">NGO</option>
-            <option value="Volunteer">Volunteer</option>
-            <option value="Service Taker">Service Taker (Needy)</option>
-          </select>
+          <label class="block text-white text-sm font-medium mb-2">Full Name</label>
+          <input type="text" name="fullname" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" placeholder="Enter your full name" required>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
-          <input type="text" name="fullname" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Enter your full name">
+          <label class="block text-white text-sm font-medium mb-2">Phone Number</label>
+          <input type="tel" name="phone" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" placeholder="Enter your phone number" required>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
-          <input type="tel" name="phone" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Enter phone number">
+          <label class="block text-white text-sm font-medium mb-2">Address</label>
+          <textarea name="address" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" rows="3" placeholder="Enter your address" required></textarea>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Address/Location</label>
-          <input type="text" name="address" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Enter your address">
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Aid Type</label>
-          <select name="aidtype" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white">
+          <label class="block text-white text-sm font-medium mb-2">Aid Type</label>
+          <select name="aid_type" required class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white">
             <option value="">Select Aid Type</option>
-            <option value="Food">Food</option>
-            <option value="Medical">Medical</option>
-            <option value="Shelter">Shelter</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Education">Education</option>
-            <option value="Volunteer">Volunteer Support</option>
-            <option value="Other">Other</option>
+            <option value="food">Food</option>
+            <option value="medical">Medical</option>
+            <option value="shelter">Shelter</option>
+            <option value="clothing">Clothing</option>
+            <option value="education">Education</option>
+            <option value="water">Water</option>
+            <option value="transport">Transport</option>
+            <option value="other">Other</option>
           </select>
         </div>
         
         <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Emergency Level</label>
-          <select name="emergency_level" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white">
-            <option value="">Select Priority</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </div>
-        
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Details</label>
-          <textarea name="details" rows="3" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400" placeholder="Describe your aid request in detail"></textarea>
+          <label class="block text-white text-sm font-medium mb-2">Details</label>
+          <textarea name="details" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" rows="4" placeholder="Describe your situation and specific needs" required></textarea>
         </div>
         
         <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
@@ -306,7 +297,6 @@
   </div>
 </div>
 
-<iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
 <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
@@ -386,7 +376,7 @@ function renderMarkers(requests) {
       <b>Aid Type:</b> ${req.aidtype}<br/>
       <b>Emergency Level:</b> ${capLevel}<br/>
       <b>Details:</b> ${req.details}<br/>
-      <b>Contact/Availability:</b> ${req.phone || '[No Contact]'}
+      <b>Contact/Availability:</b> ${req.phone || '[No Contact]'}'}
     `;
     marker.bindPopup(popupContent);
     allMarkers.push(marker);
@@ -532,10 +522,6 @@ function toggleMobileMenu() {
 }
 
 // Modal functionality
-document.getElementById('addRequestBtn').onclick = function() {
-    document.getElementById('aidRequestModal').classList.remove('hidden');
-};
-
 document.getElementById('closeModal').onclick = function() {
     document.getElementById('aidRequestModal').classList.add('hidden');
 };
@@ -557,6 +543,13 @@ document.getElementById('aidRequestForm').addEventListener('submit', function(e)
     document.getElementById('aidRequestModal').classList.add('hidden');
     e.target.reset();
 });
+
+// Modal functionality
+document.getElementById('addRequestBtn').onclick = function() {
+    document.getElementById('aidRequestModal').classList.remove('hidden');
+};
+
+
 </script>
 </body>
 </html>

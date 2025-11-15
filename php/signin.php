@@ -4,9 +4,9 @@ require_once 'config.php';
 
 $errors = [];
 
-if (!$pdo) {
+/*if (!$pdo) {
     $errors[] = "Database connection failed. Please run setup_database.php first.";
-}
+}*/
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     $username = trim($_POST['username'] ?? '');
@@ -21,16 +21,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
     if (empty($errors)) {
         try {
-            $stmt = $pdo->prepare("SELECT id, role, name, password_hash FROM users WHERE phone = :user OR email = :user");
+            $stmt = $pdo->prepare("SELECT id, username, email, password_hash FROM users WHERE username = :user OR email = :user");
             $stmt->execute([':user' => $username]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password_hash'])) {
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['name'];
-                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['user_name'] = $user['username'];
+                $_SESSION['user_role'] = 'user';
 
-                header("Location: ../html/dashboard.html");
+                header("Location: dashboard.php");
                 exit;
             } else {
                 $errors[] = "Invalid username or password.";
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign In - AID-X: Connecting Hearts, Delivering Hope</title>
+    <title>Sign In - AID-X: Smart Giving Timely Living</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -165,13 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 </head>
 <body class="font-sans min-h-screen bg-gray-50">
 
-    <!-- Language Selector -->
-    <div class="language-selector">
-        <select onchange="changeLanguage(this.value)">
-            <option value="en">🇺🇸 EN</option>
-            <option value="hi">🇮🇳 हि</option>
-        </select>
-    </div>
+
 
     <div class="hero-background bg-hero-pattern min-h-screen flex flex-col relative">
         <div class="absolute inset-0 bg-background opacity-80 backdrop-blur-sm pointer-events-none"></div>
@@ -228,7 +222,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                             </svg>
                             <h1 class="text-5xl font-bold text-white mb-4">AID-<span class="text-secondary">X</span></h1>
-                            <p class="text-xl text-gray-300 mb-8">Smart Humanitarian Support Platform</p>
+                            <p class="text-xl text-gray-300 mb-8">Smart Giving Timely Living</p>
                         </div>
                         <div class="space-y-4 text-left">
                             <div class="flex items-center text-gray-300">
@@ -281,8 +275,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                                 <div class="relative">
                                     <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                     <input type="password" id="password" name="password" 
-                                           class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                           class="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
                                            placeholder="Enter your password" required>
+                                    <button type="button" id="password-toggle" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-secondary z-50 cursor-pointer">
+                                        <i id="password-icon" class="fas fa-eye text-sm pointer-events-none"></i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -321,10 +318,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
             hamburger.classList.toggle('active');
         }
         
-        function changeLanguage(lang) {
-            // Language switching functionality
-            console.log('Language changed to:', lang);
+
+        
+        function showPassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            if (field && icon) {
+                field.type = 'text';
+                icon.className = 'fas fa-eye-slash text-sm';
+            }
         }
+        
+        function hidePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            if (field && icon) {
+                field.type = 'password';
+                icon.className = 'fas fa-eye text-sm';
+            }
+        }
+        
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                if (field.type === 'password') {
+                    showPassword(fieldId);
+                } else {
+                    hidePassword(fieldId);
+                }
+            }
+        }
+        
+        // Ensure function is available globally
+        window.togglePassword = togglePassword;
+        
+        // Add event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordBtn = document.getElementById('password-toggle');
+            if (passwordBtn) {
+                passwordBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    togglePassword('password');
+                });
+            }
+        });
     </script>
 </body>
 

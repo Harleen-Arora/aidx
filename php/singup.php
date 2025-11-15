@@ -6,7 +6,7 @@ $errors = [];
 $success_message = '';
 
 if (!$pdo) {
-    $errors[] = "Database connection failed. Please run setup_database.php first.";
+    $errors[] = "Database connection failed. Please check if XAMPP MySQL is running and database 'aidx_db' exists.";
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
@@ -44,12 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                     ':email' => $email,
                     ':password_hash' => $password_hash,
                 ]);
-                // Set session for auto-login after signup
                 $_SESSION['user_id'] = $pdo->lastInsertId();
                 $_SESSION['user_name'] = $username;
                 $_SESSION['user_role'] = 'user';
-                
-                header('Location: ../html/dashboard.html');
+                header("Location: dashboard.php");
                 exit;
             }
         } catch (PDOException $e) {
@@ -67,9 +65,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up - AID-X: Connecting Hearts, Delivering Hope</title>
+    <title>Sign Up - AID-X: Smart Giving Timely Living</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
 
     
@@ -169,13 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 </head>
 <body class="font-sans min-h-screen bg-gray-50">
 
-    <!-- Language Selector -->
-    <div class="language-selector">
-        <select onchange="changeLanguage(this.value)">
-            <option value="en">🇺🇸 EN</option>
-            <option value="hi">🇮🇳 हि</option>
-        </select>
-    </div>
+
 
     <div class="hero-background bg-hero-pattern min-h-screen flex flex-col relative">
         <div class="absolute inset-0 bg-background opacity-80 backdrop-blur-sm pointer-events-none"></div>
@@ -300,8 +293,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                                 <div class="relative">
                                     <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                     <input type="password" id="password" name="password" 
-                                           class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                           class="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
                                            placeholder="Enter your password" required>
+                                    <button type="button" id="password-toggle" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-secondary z-50 cursor-pointer">
+                                        <i id="password-icon" class="fas fa-eye text-sm pointer-events-none"></i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -310,8 +306,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                                 <div class="relative">
                                     <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                                     <input type="password" id="repeat-password" name="repeat-password" 
-                                           class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
+                                           class="w-full pl-10 pr-12 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent" 
                                            placeholder="Repeat your password" required>
+                                    <button type="button" id="repeat-password-toggle" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-2 rounded-md hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-secondary z-50 cursor-pointer">
+                                        <i id="repeat-password-icon" class="fas fa-eye text-sm pointer-events-none"></i>
+                                    </button>
                                 </div>
                             </div>
 
@@ -342,10 +341,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
             hamburger.classList.toggle('active');
         }
         
-        function changeLanguage(lang) {
-            // Language switching functionality
-            console.log('Language changed to:', lang);
+
+        
+        function showPassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            if (field && icon) {
+                field.type = 'text';
+                icon.className = 'fas fa-eye-slash text-sm';
+            }
         }
+        
+        function hidePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(fieldId + '-icon');
+            if (field && icon) {
+                field.type = 'password';
+                icon.className = 'fas fa-eye text-sm';
+            }
+        }
+        
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                if (field.type === 'password') {
+                    showPassword(fieldId);
+                } else {
+                    hidePassword(fieldId);
+                }
+            }
+        }
+        
+        // Ensure function is available globally
+        window.togglePassword = togglePassword;
+        
+        // Add event listeners when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const passwordBtn = document.getElementById('password-toggle');
+            const repeatPasswordBtn = document.getElementById('repeat-password-toggle');
+            
+            if (passwordBtn) {
+                passwordBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    togglePassword('password');
+                });
+            }
+            
+            if (repeatPasswordBtn) {
+                repeatPasswordBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    togglePassword('repeat-password');
+                });
+            }
+        });
     </script>
 </body>
 </html>
