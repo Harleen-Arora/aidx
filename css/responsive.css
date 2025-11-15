@@ -189,17 +189,18 @@ body {
   transform: translateY(-2px);
 }
 
-/* Chatbot - Mobile First */
+/* Enhanced Chatbot - Mobile First */
 .chatbot-iframe {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 280px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   border: none;
   z-index: 9999;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
 }
 
 /* Tablet Styles */
@@ -258,8 +259,8 @@ body {
   }
 
   .chatbot-iframe {
-    width: 350px;
-    height: 500px;
+    width: 100%;
+    height: 100%;
   }
 }
 
@@ -314,8 +315,8 @@ body {
   }
 
   .chatbot-iframe {
-    width: 400px;
-    height: 600px;
+    width: 100%;
+    height: 100%;
   }
 }
 

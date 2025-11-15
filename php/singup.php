@@ -2,7 +2,7 @@
 session_start();
 
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'aidx_users');  // Your database name
+define('DB_NAME', 'aidx_db');  // Your database name
 define('DB_USER', 'root');         // Your database username
 define('DB_PASS', '');             // Your database password
 define('DB_CHARSET', 'utf8mb4');
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     <title>Sign Up Page</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
+    <iframe src="../html/chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
    
   </ul>
 </nav>
@@ -177,16 +177,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         }
     </script>
 </head>
-<body class="font-sans min-h-screen auth-background flex items-center justify-center p-4">
+<body class="font-sans min-h-screen auth-background">
  <nav class="navbar">
   <ul class="nav-links">
-    <li><a href="index.html">Home</a></li>
+    <li><a href="../html/index.html">Home</a></li>
     <li><a href="signin.php">Sign In</a></li>
     <li><a href="singup.php">Sign Up</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="../html/dashboard.html">Dashboard</a></li>
     <li><a href="aidxForm.php">Aid Form</a></li>
-    <li><a href="map.html">Map</a></li>
+    <li><a href="../html/map.html">Map</a></li>
+  </ul>
+</nav>
 
+<div class="flex items-center justify-center p-4 min-h-screen">
     <!-- Authentication Container (Form Card) -->
     <div class="auth-container w-full max-w-md mx-auto p-8 sm:p-10 rounded-xl shadow-2xl bg-black bg-opacity-30 backdrop-blur-sm">
 
@@ -200,28 +203,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
         <!-- Sign Up Form -->
         <form id="signup-form" method="post" action="">
-
+            <?php if (!empty($success_message)): ?>
+                <div style="background:#d4edda; color:#155724; padding:10px; border-radius:5px; margin-bottom:15px;">
+                    <?= htmlspecialchars($success_message) ?>
+                </div>
+            <?php endif; ?>
+            <?php if (!empty($errors)): ?>
+                <div style="background:#f8d7da; color:#842029; padding:10px; border-radius:5px; margin-bottom:15px;">
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= htmlspecialchars($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
 
             <!-- Username Field -->
-            <div>
+            <div class="mb-4">
                 <label for="username" class="text-sm font-medium text-gray-300 block mb-2">USERNAME</label>
                 <input type="text" id="username" name="username" class="form-input-custom" placeholder="Enter your username" required>
             </div>
 
             <!-- Email Address Field -->
-            <div>
+            <div class="mb-4">
                 <label for="email" class="text-sm font-medium text-gray-300 block mb-2">EMAIL ADDRESS</label>
                 <input type="email" id="email" name="email" class="form-input-custom" placeholder="Enter your email address" required>
             </div>
 
             <!-- Password Field -->
-            <div>
+            <div class="mb-4">
                 <label for="password" class="text-sm font-medium text-gray-300 block mb-2">PASSWORD</label>
                 <input type="password" id="password" name="password" class="form-input-custom" placeholder="Enter your password" required>
             </div>
 
             <!-- Repeat Password Field -->
-            <div>
+            <div class="mb-4">
                 <label for="repeat-password" class="text-sm font-medium text-gray-300 block mb-2">REPEAT PASSWORD</label>
                 <input type="password" id="repeat-password" name="repeat-password" class="form-input-custom" placeholder="Repeat your password" required>
             </div>
@@ -239,6 +255,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         </form>
 
     </div>
+</div>
 
     <script>
         function handleSignUp() {

@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In to AID-X</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <iframe src="chatbot.html"
+    <iframe src="../html/chatbot.html"
         style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
     <style>
         .navbar {
@@ -427,12 +427,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 <body>
     <nav class="navbar">
         <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
+            <li><a href="../html/index.html">Home</a></li>
             <li><a href="signin.php">Sign In</a></li>
             <li><a href="singup.php">Sign Up</a></li>
-            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="../html/dashboard.html">Dashboard</a></li>
             <li><a href="aidxForm.php">Aid Form</a></li>
-            <li><a href="map.html">Map</a></li>
+            <li><a href="../html/map.html">Map</a></li>
         </ul>
     </nav>
 
@@ -464,12 +464,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
                 <div class="input-group">
                     <i class="fas fa-user icon"></i>
-                    <input type="text" id="username" placeholder="Username or Email" required>
+                    <input type="text" id="username" name="username" placeholder="Username or Email" required>
                 </div>
 
                 <div class="input-group">
                     <i class="fas fa-lock icon"></i>
-                    <input type="password" id="password" placeholder="Password" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
                 </div>
 
                 <div class="form-options">
@@ -488,7 +488,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
 
 
                 <p class="signup-link">
-                    Don't have an account? <a href="#">Create an Account</a>
+                    Don't have an account? <a href="singup.php">Create an Account</a>
                 </p>
             </form>
         </div>
