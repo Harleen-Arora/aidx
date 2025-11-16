@@ -1,3 +1,10 @@
+<?php
+session_start();
+
+// Check if user is logged in
+$is_logged_in = isset($_SESSION['user_id']);
+$user_name = $_SESSION['user_name'] ?? '';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,7 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AID-X - Smart Giving Timely Living</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="../css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/brands.min.css">
     
@@ -97,7 +104,7 @@
         <header class="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/20">
             <nav class="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
                 <div class="text-2xl md:text-3xl font-extrabold text-white tracking-wider flex items-center">
-                    <img src="assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Logo" class="w-6 h-6 md:w-8 md:h-8 mr-2 rounded-full object-cover">
+                    <img src="../assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Logo" class="w-6 h-6 md:w-8 md:h-8 mr-2 rounded-full object-cover">
                     AID-<span class="text-secondary">X</span>
                 </div>
 
@@ -112,13 +119,23 @@
                 </div>
                 
                 <div class="hidden lg:flex items-center space-x-4 xl:space-x-8">
-                    <a href="#home" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
-                    <a href="#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
-                    <a href="#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
-                    <a href="html/map.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
-                    <a href="#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
-                    <a href="php/signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
-                    <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+                    <?php if ($is_logged_in): ?>
+                        <a href="dashboard.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Dashboard</a>
+                        <a href="map.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
+                        <a href="request.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Request Aid</a>
+                        <span class="text-white font-medium text-sm xl:text-base">Welcome, <?= htmlspecialchars($user_name) ?></span>
+                        <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">
+                            <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                        </a>
+                    <?php else: ?>
+                        <a href="#home" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
+                        <a href="#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
+                        <a href="#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
+                        <a href="map.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
+                        <a href="#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
+                        <a href="signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
+                        <a href="singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+                    <?php endif; ?>
                 </div>
 
             </nav>
@@ -126,13 +143,20 @@
         
         <div id="mobile-nav" class="hidden lg:hidden fixed top-16 left-0 right-0 z-40 bg-white/10 backdrop-blur-md border-b border-white/20">
             <div class="px-6 py-4 space-y-3">
-                <a href="#home" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
-                <a href="#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
-                <a href="#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
-                <a href="html/map.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
-                <a href="#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
-                <a href="php/signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
-                <a href="php/singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
+                <?php if ($is_logged_in): ?>
+                    <a href="dashboard.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Dashboard</a>
+                    <a href="map.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
+                    <a href="request.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Request Aid</a>
+                    <a href="logout.php" class="block px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition duration-200 font-medium text-center">Logout</a>
+                <?php else: ?>
+                    <a href="#home" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
+                    <a href="#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
+                    <a href="#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
+                    <a href="map.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
+                    <a href="#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
+                    <a href="signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
+                    <a href="singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -145,8 +169,13 @@
                         <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">Smart Giving Timely Living</h1>
                         <p class="text-xl text-gray-300 mb-8 leading-relaxed">Making giving faster, transparent, and more impactful. Connect donors, NGOs, volunteers, and people in need through real-time, technology-driven solutions.</p>
                         <div class="flex flex-col sm:flex-row gap-4">
-                            <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Get Started</a>
-                            <a href="php/request.php" class="bg-secondary hover:bg-primary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Request Aid</a>
+                            <?php if ($is_logged_in): ?>
+                                <a href="dashboard.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Go to Dashboard</a>
+                                <a href="request.php" class="bg-secondary hover:bg-primary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Request Aid</a>
+                            <?php else: ?>
+                                <a href="singup.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Get Started</a>
+                                <a href="request.php" class="bg-secondary hover:bg-primary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg text-center">Request Aid</a>
+                            <?php endif; ?>
                             <a href="#mission" class="border-2 border-secondary text-secondary px-8 py-4 rounded-lg font-semibold hover:bg-secondary hover:text-white transition duration-300 text-center">Learn More</a>
                         </div>
                     </div>
@@ -154,7 +183,7 @@
                     <!-- Right Image -->
                     <div class="flex justify-center lg:justify-end">
                         <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl transform hover:scale-105 transition-all duration-500 hover:shadow-3xl animate-fade-in max-w-lg w-full overflow-hidden">
-                            <img src="assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Platform" class="w-full h-auto">
+                            <img src="../assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Platform" class="w-full h-auto">
                         </div>
                     </div>
                 </div>
@@ -330,9 +359,9 @@
                     <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">Ready to Make a Difference?</h2>
                     <p class="text-xl text-gray-300 mb-8">Join thousands of donors, NGOs, and volunteers making humanitarian aid more effective</p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                        <a href="php/singup.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg">Join as Donor</a>
-                        <a href="php/singup.php" class="bg-secondary hover:bg-primary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg">Register NGO</a>
-                        <a href="html/chatbot.html" class="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-background transition duration-300">Get Support</a>
+                        <a href="singup.php" class="bg-primary hover:bg-secondary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg">Join as Donor</a>
+                        <a href="singup.php" class="bg-secondary hover:bg-primary text-white px-8 py-4 rounded-lg font-semibold transition duration-300 transform hover:scale-[1.02] shadow-lg">Register NGO</a>
+                        <a href="../html/chatbot.html" class="border-2 border-accent text-accent px-8 py-4 rounded-lg font-semibold hover:bg-accent hover:text-background transition duration-300">Get Support</a>
                     </div>
                 </div>
             </div>
@@ -345,7 +374,7 @@
                     <!-- About AID-X -->
                     <div>
                         <div class="flex items-center mb-6">
-                            <img src="assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Logo" class="w-8 h-8 mr-2 rounded-full object-cover">
+                            <img src="../assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Logo" class="w-8 h-8 mr-2 rounded-full object-cover">
                             <h3 class="text-2xl font-bold">AID-<span class="text-secondary">X</span></h3>
                         </div>
                         <p class="text-gray-300 mb-4">Smart humanitarian support platform connecting donors, NGOs, and people in need through real-time technology.</p>
@@ -382,7 +411,7 @@
                     <div>
                         <h4 class="text-xl font-semibold mb-6 text-white">Support</h4>
                         <ul class="space-y-3">
-                            <li><a href="html/chatbot.html" class="text-gray-300 hover:text-secondary transition-colors flex items-center"><i class="fas fa-chevron-right mr-2 text-xs"></i>Help Center</a></li>
+                            <li><a href="../html/chatbot.html" class="text-gray-300 hover:text-secondary transition-colors flex items-center"><i class="fas fa-chevron-right mr-2 text-xs"></i>Help Center</a></li>
                             <li><a href="#" class="text-gray-300 hover:text-secondary transition-colors flex items-center"><i class="fas fa-chevron-right mr-2 text-xs"></i>FAQ</a></li>
                             <li><a href="#" class="text-gray-300 hover:text-secondary transition-colors flex items-center"><i class="fas fa-chevron-right mr-2 text-xs"></i>User Guide</a></li>
                             <li><a href="#" class="text-gray-300 hover:text-secondary transition-colors flex items-center"><i class="fas fa-chevron-right mr-2 text-xs"></i>API Documentation</a></li>
@@ -476,7 +505,7 @@
         </div>
     </div>
 
-    <script src="js/responsive.js"></script>
+    <script src="../js/responsive.js"></script>
     <script>
         function toggleMobileMenu() {
             const mobileNav = document.getElementById('mobile-nav');

@@ -159,8 +159,6 @@ $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
 
                 ':email' => $formData['email'] ?: null,
 
-                // Only save coordinates if they were provided (applies to request/offer)
-
                 ':latitude' => ($type === 'request' || $type === 'offer') ? $formData['latitude'] : null,
 
                 ':longitude' => ($type === 'request' || $type === 'offer') ? $formData['longitude'] : null,
@@ -171,7 +169,7 @@ $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
 
                 ':aadhaar' => $formData['aadhaar'],
 
-                ':type' => $type,
+                ':type' => $type
 
             ]);
 
@@ -217,7 +215,7 @@ $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
 
     <!-- Configure Tailwind for the Inter font and custom colors -->
     
-    <iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
+   
     
 
   </ul>
@@ -414,15 +412,17 @@ $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
 </head>
 
 <body>
-
+ <iframe src="chatbot.html" style="position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;"></iframe>
 
 <nav class="navbar">
   <ul class="nav-links">
     <li><a href="index.html">Home</a></li>
     <li><a href="signin.php">Sign In</a></li>
-    <li><a href="singup.php">Sign Up</a></li>
+    <li><a href="signup.php">Sign Up</a></li>
     <li><a href="aidxForm.php">Aid Form</a></li>
     <li><a href="map.html">Map</a></li>
+</ul>
+</nav>  
 <div class="form-container bg-white bg-opacity-95 backdrop-blur-sm rounded-3xl p-6 md:p-10 w-full max-w-lg shadow-2xl border border-primary/50">
 
     <div class="text-center mb-8">
@@ -480,6 +480,7 @@ $dsn = "mysql:host=".DB_HOST.";dbname=".DB_NAME.";charset=".DB_CHARSET;
 
 
     <form method="post" class="space-y-6">
+
 
         <!-- Engagement Type -->
 

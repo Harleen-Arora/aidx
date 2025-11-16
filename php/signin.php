@@ -173,9 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
         <header class="relative z-10 bg-white/10 backdrop-blur-md border-b border-white/20">
             <nav class="flex justify-between items-center max-w-7xl mx-auto px-6 py-4">
                 <div class="text-2xl md:text-3xl font-extrabold text-white tracking-wider flex items-center">
-                    <svg class="w-6 h-6 md:w-8 md:h-8 mr-2 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                    </svg>
+                    <img src="../assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Logo" class="w-6 h-6 md:w-8 md:h-8 mr-2 rounded-full object-cover">
                     AID-<span class="text-secondary">X</span>
                 </div>
 
@@ -218,9 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $pdo) {
                 <div class="hidden lg:flex flex-col justify-center items-center p-12 bg-white/5 backdrop-blur-md rounded-l-3xl">
                     <div class="text-center">
                         <div class="mb-8">
-                            <svg class="w-24 h-24 mx-auto text-secondary mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                            </svg>
+                            <img src="../assets/WhatsApp%20Image%202025-11-15%20at%2021.33.16.jpeg" alt="AID-X Logo" class="w-24 h-24 mx-auto mb-6 rounded-full object-cover">
                             <h1 class="text-5xl font-bold text-white mb-4">AID-<span class="text-secondary">X</span></h1>
                             <p class="text-xl text-gray-300 mb-8">Smart Giving Timely Living</p>
                         </div>

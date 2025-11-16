@@ -1,18 +1,50 @@
 <?php
+session_start();
+require_once 'config.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Store form data in session for later use
-    session_start();
-    $_SESSION['aid_request'] = [
-        'fullname' => $_POST['fullname'] ?? '',
-        'phone' => $_POST['phone'] ?? '',
-        'address' => $_POST['address'] ?? '',
-        'aid_type' => $_POST['aid_type'] ?? '',
-        'details' => $_POST['details'] ?? ''
-    ];
-    
-    // Redirect to signup page
-    header('Location: singup.php');
-    exit;
+    // Check if user is logged in
+    if (isset($_SESSION['user_id'])) {
+        // User is logged in, save to database
+        if ($pdo) {
+            try {
+                $sql = "INSERT INTO aid_requests (fullname, phone, aidtype, details, aadhaar, type) 
+                        VALUES (:fullname, :phone, :aidtype, :details, :aadhaar, :type)";
+                $stmt = $pdo->prepare($sql);
+                
+                $stmt->execute([
+                    ':fullname' => $_POST['fullname'] ?? '',
+                    ':phone' => $_POST['phone'] ?? '',
+                    ':aidtype' => $_POST['aid_type'] ?? '',
+                    ':details' => $_POST['details'] ?? '',
+                    ':aadhaar' => '000000000000',
+                    ':type' => 'request'
+                ]);
+                
+                echo "<script>alert('Aid request submitted successfully!'); window.location.href='dashboard.php';</script>";
+                exit;
+            } catch (PDOException $e) {
+                echo "<script>alert('Database Error: " . $e->getMessage() . "'); history.back();</script>";
+                exit;
+            }
+        } else {
+            echo "<script>alert('Database connection failed'); history.back();</script>";
+            exit;
+        }
+    } else {
+        // Store form data in session for later use
+        $_SESSION['aid_request'] = [
+            'fullname' => $_POST['fullname'] ?? '',
+            'phone' => $_POST['phone'] ?? '',
+            'address' => $_POST['address'] ?? '',
+            'aid_type' => $_POST['aid_type'] ?? '',
+            'details' => $_POST['details'] ?? ''
+        ];
+        
+        // Redirect to signup page
+        header('Location: singup.php');
+        exit;
+    }
 }
 ?>
 
@@ -53,12 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-white text-sm font-medium mb-2">Full Name</label>
-                        <input type="text" name="fullname" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" placeholder="Enter your full name" required>
+                        <input type="text" name="fullname" minlength="3" maxlength="50" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" placeholder="Enter your full name" required oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '')">
                     </div>
                     
                     <div>
                         <label class="block text-white text-sm font-medium mb-2">Phone Number</label>
-                        <input type="tel" name="phone" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" placeholder="Enter your phone number" required>
+                        <input type="tel" name="phone" pattern="[0-9]{10}" maxlength="10" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" placeholder="Enter 10-digit phone number" required oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0,10)">
                     </div>
                 </div>
                 
@@ -87,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div>
                     <label class="block text-white text-sm font-medium mb-2">Details</label>
-                    <textarea name="details" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" rows="3 sm:rows-4" placeholder="Describe your situation and specific needs" required></textarea>
+                    <textarea name="details" maxlength="500" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" rows="3 sm:rows-4" placeholder="Describe your situation and specific needs (max 500 characters)" required></textarea>
                 </div>
                 
                 <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition duration-300 transform hover:scale-[1.02] text-sm sm:text-base">

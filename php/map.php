@@ -1,3 +1,7 @@
+<?php
+session_start();
+$isLoggedIn = isset($_SESSION['user_id']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,8 +10,6 @@
 <title>Map - AID-X: Smart Humanitarian Support Platform</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 <script>
@@ -181,13 +183,20 @@
             </div>
             
             <div class="hidden lg:flex items-center space-x-4 xl:space-x-8">
-                <a href="../index.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
-                <a href="../index.html#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
-                <a href="../index.html#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
-                <a href="map.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
-                <a href="../index.html#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
-                <a href="../php/signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
-                <a href="../php/singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+                <?php if ($isLoggedIn): ?>
+                    <a href="home.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
+                    <a href="dashboard.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Dashboard</a>
+                    <a href="map.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
+                    <a href="logout.php" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Logout</a>
+                <?php else: ?>
+                    <a href="../index.html" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Home</a>
+                    <a href="../index.html#about" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">About</a>
+                    <a href="../index.html#services" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Services</a>
+                    <a href="map.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Map</a>
+                    <a href="../index.html#contact" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Contact</a>
+                    <a href="signin.php" class="text-white hover:text-secondary transition duration-200 font-medium text-sm xl:text-base">Login</a>
+                    <a href="singup.php" class="bg-primary hover:bg-secondary text-white px-4 py-2 xl:px-6 xl:py-2 rounded-full transition duration-200 font-medium text-sm xl:text-base">Sign Up</a>
+                <?php endif; ?>
             </div>
 
         </nav>
@@ -195,13 +204,20 @@
     
     <div id="mobile-nav" class="hidden lg:hidden fixed top-16 left-0 right-0 z-40 bg-white/10 backdrop-blur-md border-b border-white/20">
         <div class="px-6 py-4 space-y-3">
-            <a href="../index.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
-            <a href="../index.html#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
-            <a href="../index.html#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
-            <a href="map.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
-            <a href="../index.html#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
-            <a href="../php/signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
-            <a href="../php/singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
+            <?php if ($isLoggedIn): ?>
+                <a href="home.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
+                <a href="dashboard.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Dashboard</a>
+                <a href="map.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
+                <a href="logout.php" class="block px-3 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition duration-200 font-medium text-center">Logout</a>
+            <?php else: ?>
+                <a href="../index.html" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Home</a>
+                <a href="../index.html#about" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">About</a>
+                <a href="../index.html#services" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Services</a>
+                <a href="map.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Map</a>
+                <a href="../index.html#contact" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Contact</a>
+                <a href="signin.php" class="block px-3 py-2 text-white hover:text-secondary rounded-lg transition duration-200 font-medium">Login</a>
+                <a href="singup.php" class="block px-3 py-2 bg-primary hover:bg-secondary text-white rounded-lg transition duration-200 font-medium text-center">Sign Up</a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -266,15 +282,11 @@ function createColoredIcon(color) {
 }
 
 async function fetchRequests() {
-  try {
-    const response = await fetch('../php/get_requests.php?t=' + Date.now());
-    const data = await response.json();
-    console.log('Fetched data:', data);
-    return data;
-  } catch (error) {
-    console.error('Error fetching requests:', error);
-    return [];
-  }
+  return [
+    {fullname: "John Doe", address: "Delhi", latitude: 28.6139, longitude: 77.2090, aidtype: "Food", details: "Urgent ration needed", emergency_level: "High", phone: "9876543210"},
+    {fullname: "Jane Smith", address: "Ludhiana", latitude: 30.9010, longitude: 75.8573, aidtype: "Medical", details: "Blood donation required", emergency_level: "Medium", phone: "9876543211"},
+    {fullname: "Test User", address: "Mumbai", latitude: 19.0760, longitude: 72.8777, aidtype: "Volunteer", details: "Help with relief", emergency_level: "Low", phone: "9876543212"}
+  ];
 }
 
 function renderMarkers(requests) {
@@ -293,12 +305,12 @@ function renderMarkers(requests) {
   const grouped = { 'High': [], 'Medium': [], 'Low': [] };
 
   requests.forEach(req => {
-    const level = (req.emergency_level || 'Medium').toString();
+    const level = (req.emergency_level || 'Low').toString();
     const capLevel = level.charAt(0).toUpperCase() + level.slice(1);
     grouped[capLevel] = grouped[capLevel] || [];
     grouped[capLevel].push(req);
 
-    const iconColor = levelIcons[capLevel] || 'orange';
+    const iconColor = levelIcons[capLevel] || 'green';
     const icon = createColoredIcon(iconColor);
     const marker = L.marker([req.latitude, req.longitude], {icon}).addTo(map);
     marker.bindPopup(`<b>${req.fullname}</b><br/>${req.aidtype}`);
@@ -362,19 +374,20 @@ document.addEventListener('DOMContentLoaded', function() {
         maxZoom: 18
       }).addTo(map);
       
-      // Keep existing sample data
-      allRequests = [
-        {fullname: "John Doe", address: "Delhi", latitude: 28.6139, longitude: 77.2090, aidtype: "Food", details: "Urgent ration needed", emergency_level: "High", phone: "9876543210"},
-        {fullname: "Jane Smith", address: "Ludhiana", latitude: 30.9010, longitude: 75.8573, aidtype: "Medical", details: "Blood donation required", emergency_level: "Medium", phone: "9876543211"},
-        {fullname: "Test User", address: "Mumbai", latitude: 19.0760, longitude: 72.8777, aidtype: "Volunteer", details: "Help with relief", emergency_level: "Low", phone: "9876543212"}
-      ];
-      renderMarkers(allRequests);
+      fetchRequests().then(results => {
+        allRequests = results;
+        renderMarkers(results);
+      });
     }
   }, 300);
 });
 
 document.getElementById('addRequestBtn').onclick = function() {
-  window.location.href = '../php/request.php';
+  <?php if ($isLoggedIn): ?>
+    window.location.href = 'request.php';
+  <?php else: ?>
+    window.location.href = 'signin.php';
+  <?php endif; ?>
 };
 </script>
 </body>
