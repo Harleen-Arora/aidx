@@ -43,127 +43,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body class="bg-gradient-to-br from-background to-primary min-h-screen">
     <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md sm:max-w-lg">
             <div class="text-center mb-8">
                 <h1 class="text-3xl font-bold text-white mb-2">Request Aid</h1>
                 <p class="text-gray-300">Fill out the form to request assistance</p>
             </div>
             
-            <form method="post" action="" class="space-y-6">
-                <div>
-                    <label class="block text-white text-sm font-medium mb-2">Full Name</label>
-                    <input type="text" name="fullname" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" placeholder="Enter your full name" required>
-                </div>
-                
-                <div>
-                    <label class="block text-white text-sm font-medium mb-2">Phone Number</label>
-                    <input type="tel" name="phone" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" placeholder="Enter your phone number" required>
+            <form method="post" action="" class="space-y-4 sm:space-y-6">
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Full Name</label>
+                        <input type="text" name="fullname" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-white text-sm font-medium mb-2">Phone Number</label>
+                        <input type="tel" name="phone" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" placeholder="Enter your phone number" required>
+                    </div>
                 </div>
                 
                 <div>
                     <label class="block text-white text-sm font-medium mb-2">Address</label>
-                    <textarea name="address" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" rows="3" placeholder="Enter your address" required></textarea>
+                    <textarea name="address" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" rows="2 sm:rows-3" placeholder="Enter your address" required></textarea>
                 </div>
                 
                 <div>
-                    <label class="block text-white text-sm font-medium mb-3">Type of Aid Needed</label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="food" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-utensils text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Food</span>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="medical" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-heartbeat text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Medical</span>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="shelter" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-home text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Shelter</span>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="clothing" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-tshirt text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Clothing</span>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="education" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-graduation-cap text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Education</span>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="water" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-tint text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Water</span>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="transport" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-car text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Transport</span>
-                            </div>
-                        </label>
-                        
-                        <label class="flex items-center p-3 bg-white/20 border border-white/30 rounded-lg cursor-pointer hover:bg-white/30 transition-all duration-200">
-                            <input type="radio" name="aid_type" value="other" class="sr-only" required>
-                            <div class="w-5 h-5 border-2 border-white rounded-full mr-3 flex items-center justify-center">
-                                <div class="w-2 h-2 bg-secondary rounded-full opacity-0 transition-opacity duration-200"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <i class="fas fa-ellipsis-h text-secondary mr-2"></i>
-                                <span class="text-white text-sm">Other</span>
-                            </div>
-                        </label>
+                    <label class="block text-white text-sm font-medium mb-2">Type of Aid Needed</label>
+                    <div class="relative">
+                        <select name="aid_type" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-secondary appearance-none text-sm" required>
+                            <option value="" class="bg-background text-white">Select aid type...</option>
+                            <option value="food" class="bg-background text-white">🍽️ Food & Nutrition</option>
+                            <option value="medical" class="bg-background text-white">🏥 Medical Care</option>
+                            <option value="shelter" class="bg-background text-white">🏠 Shelter & Housing</option>
+                            <option value="clothing" class="bg-background text-white">👕 Clothing</option>
+                            <option value="education" class="bg-background text-white">🎓 Education</option>
+                            <option value="water" class="bg-background text-white">💧 Clean Water</option>
+                            <option value="transport" class="bg-background text-white">🚗 Transportation</option>
+                            <option value="other" class="bg-background text-white">📋 Other</option>
+                        </select>
+                        <i class="fas fa-chevron-down absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-300 pointer-events-none"></i>
                     </div>
                 </div>
                 
                 <div>
                     <label class="block text-white text-sm font-medium mb-2">Details</label>
-                    <textarea name="details" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" rows="4" placeholder="Describe your situation and specific needs" required></textarea>
+                    <textarea name="details" class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary text-sm" rows="3 sm:rows-4" placeholder="Describe your situation and specific needs" required></textarea>
                 </div>
                 
-                <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-semibold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-[1.02]">
+                <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition duration-300 transform hover:scale-[1.02] text-sm sm:text-base">
                     Submit Request
                 </button>
             </form>

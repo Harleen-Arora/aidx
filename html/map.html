@@ -99,12 +99,12 @@
   }
   #search-section h2 { margin:0 0 12px 0; font-size: 1.2rem; color: white; }
   #searchBox {
-    display: flex; align-items: center; gap: 8px;
+    position: relative; z-index: 5;
   }
   #searchInput {
-    flex:1; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.3); font-size:1rem; min-width:0;
+    width: 100%; padding:12px 16px; border-radius:8px; border:1px solid rgba(255,255,255,0.3); font-size:1.1rem; min-width:0;
     background: rgba(0,0,0,0.3); color: white; backdrop-filter: blur(8px); cursor: text;
-    position: relative; z-index: 10; pointer-events: auto;
+    position: relative; z-index: 10; pointer-events: auto; height: 48px;
   }
   #searchInput::placeholder { color: rgba(255,255,255,0.7); }
   #searchInput:focus {
@@ -113,15 +113,14 @@
   #searchInput:hover {
     background: rgba(0,0,0,0.4); border-color: rgba(255,255,255,0.5);
   }
-  #searchBox {
-    display: flex; align-items: center; gap: 8px; position: relative; z-index: 5;
-  }
   #searchBtn { 
-    background: #00b4d8; color:white; border:none; font-weight:600; border-radius:8px; padding:10px 20px; cursor:pointer; transition: background 0.3s;
+    background: #00b4d8; color:white; border:none; font-weight:600; border-radius:8px; padding:12px 16px; cursor:pointer; transition: background 0.3s;
+    font-size: 1rem; min-height: 44px; display: flex; align-items: center; justify-content: center;
   }
   #searchBtn:hover { background:#48cae4; }
   #resetBtn {
-    background:#ef4444; color:white; border:none; border-radius:8px; padding:10px 14px; cursor:pointer; font-size:1rem; transition: background 0.3s;
+    background:#ef4444; color:white; border:none; border-radius:8px; padding:12px 16px; cursor:pointer; font-size:1rem; transition: background 0.3s;
+    min-height: 44px; display: flex; align-items: center; justify-content: center;
   }
   #resetBtn:hover { background:#dc2626; }
   #active-section h2 { margin-top: 0; margin-bottom:15px; font-size: 1.25rem; color: white; }
@@ -145,9 +144,6 @@
   #sidebar .field { margin-bottom: 4px; font-size: 0.95rem; color: rgba(255,255,255,0.9); }
   #sidebar .field strong { color: #48cae4; }
   #loading { text-align: center; color: white; font-style: italic; display: none; }
-  iframe {
-    position: fixed; bottom: 20px; right: 20px; width: 400px; height: 600px; border: none; z-index: 9999;
-  }
   @media (max-width: 768px) {
     #container { flex-direction: column; }
     #sidebar { width: 100%; height: auto; max-height: 50vh; }
@@ -217,11 +213,13 @@
             <div class="lg:col-span-1">
                 <div id="sidebar">
     <div id="search-section">
-      <h2>Search Aid Requests</h2>
+      <h2>Search</h2>
       <div id="searchBox">
         <input type="text" id="searchInput" placeholder="Enter location (e.g., Delhi), aid type, name, etc.">
-        <button id="searchBtn">Search</button>
-        <button id="resetBtn">Reset</button>
+      </div>
+      <div class="mt-3 flex gap-2">
+        <button id="searchBtn" class="flex-1" onclick="doSearch()">Search</button>
+        <button id="resetBtn" class="flex-1" onclick="resetSearch()">Reset</button>
       </div>
     </div>
     
@@ -240,61 +238,6 @@
             </div>
         </div>
     </div>
-</div>
-
-<!-- Modal for Aid Request Form -->
-<div id="aidRequestModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-  <div class="bg-white/10 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 w-full max-w-md max-h-[90vh] overflow-y-auto">
-    <div class="p-6">
-      <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-white">Submit Aid Request</h2>
-        <button id="closeModal" class="text-white hover:text-secondary transition duration-200">
-          <i class="fas fa-times text-xl"></i>
-        </button>
-      </div>
-      
-      <form id="aidRequestForm" class="space-y-4">
-        <div>
-          <label class="block text-white text-sm font-medium mb-2">Full Name</label>
-          <input type="text" name="fullname" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" placeholder="Enter your full name" required>
-        </div>
-        
-        <div>
-          <label class="block text-white text-sm font-medium mb-2">Phone Number</label>
-          <input type="tel" name="phone" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" placeholder="Enter your phone number" required>
-        </div>
-        
-        <div>
-          <label class="block text-white text-sm font-medium mb-2">Address</label>
-          <textarea name="address" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" rows="3" placeholder="Enter your address" required></textarea>
-        </div>
-        
-        <div>
-          <label class="block text-white text-sm font-medium mb-2">Aid Type</label>
-          <select name="aid_type" required class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white">
-            <option value="">Select Aid Type</option>
-            <option value="food">Food</option>
-            <option value="medical">Medical</option>
-            <option value="shelter">Shelter</option>
-            <option value="clothing">Clothing</option>
-            <option value="education">Education</option>
-            <option value="water">Water</option>
-            <option value="transport">Transport</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        
-        <div>
-          <label class="block text-white text-sm font-medium mb-2">Details</label>
-          <textarea name="details" class="w-full px-4 py-3 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary" rows="4" placeholder="Describe your situation and specific needs" required></textarea>
-        </div>
-        
-        <button type="submit" class="w-full bg-primary hover:bg-secondary text-white font-bold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-[1.02] shadow-lg">
-          Submit Request
-        </button>
-      </form>
-    </div>
-  </div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -370,15 +313,7 @@ function renderMarkers(requests) {
     const iconColor = levelIcons[capLevel] || 'green';
     const icon = createColoredIcon(iconColor);
     const marker = L.marker([req.latitude, req.longitude], {icon}).addTo(map);
-    const popupContent = `
-      <b>Name:</b> ${req.fullname}<br/>
-      <b>Location:</b> ${req.address || '[No address]'}<br/>
-      <b>Aid Type:</b> ${req.aidtype}<br/>
-      <b>Emergency Level:</b> ${capLevel}<br/>
-      <b>Details:</b> ${req.details}<br/>
-      <b>Contact/Availability:</b> ${req.phone || '[No Contact]'}'}
-    `;
-    marker.bindPopup(popupContent);
+    marker.bindPopup(`<b>${req.fullname}</b><br/>${req.aidtype}`);
     allMarkers.push(marker);
   });
 
@@ -395,10 +330,8 @@ function renderMarkers(requests) {
       div.className = 'problem';
       div.innerHTML = `
         <div class="field"><strong>Name:</strong> ${item.fullname}</div>
-        <div class="field"><strong>Location:</strong> ${item.address || '[No address]'}</div>
+        <div class="field"><strong>Location:</strong> ${item.address}</div>
         <div class="field"><strong>Aid Type:</strong> ${item.aidtype}</div>
-        <div class="field"><strong>Details:</strong> ${item.details}</div>
-        <div class="field"><strong>Contact:</strong> ${item.phone || '[No Contact]'}</div>
       `;
       div.onclick = () => { map.flyTo([item.latitude, item.longitude], 15); };
       section.appendChild(div);
@@ -407,148 +340,64 @@ function renderMarkers(requests) {
   });
 }
 
+// Search function
 function doSearch() {
   const val = document.getElementById('searchInput').value.trim();
-  if (val === "") {
-    renderMarkers(allRequests);
-    map.setView([23.5937, 80.9629], 5);
-    return;
+  
+  const cityCoords = {
+    'delhi': [28.6139, 77.2090],
+    'mumbai': [19.0760, 72.8777],
+    'bangalore': [12.9716, 77.5946],
+    'chennai': [13.0827, 80.2707],
+    'kolkata': [22.5726, 88.3639],
+    'hyderabad': [17.3850, 78.4867],
+    'pune': [18.5204, 73.8567],
+    'ahmedabad': [23.0225, 72.5714],
+    'jaipur': [26.9124, 75.7873],
+    'lucknow': [26.8467, 80.9462],
+    'kanpur': [26.4499, 80.3319],
+    'nagpur': [21.1458, 79.0882],
+    'indore': [22.7196, 75.8577],
+    'bhopal': [23.2599, 77.4126],
+    'ludhiana': [30.9010, 75.8573],
+    'agra': [27.1767, 78.0081],
+    'varanasi': [25.3176, 82.9739],
+    'srinagar': [34.0837, 74.7973],
+    'amritsar': [31.6340, 74.8723],
+    'chandigarh': [30.7333, 76.7794],
+    'guwahati': [26.1445, 91.7362]
+  };
+  
+  const searchKey = val.toLowerCase();
+  
+  if (cityCoords[searchKey]) {
+    const [lat, lon] = cityCoords[searchKey];
+    map.setView([lat, lon], 12);
+    const marker = L.marker([lat, lon]).addTo(map);
+    marker.bindPopup(`<b>${val}</b>`).openPopup();
   }
-  const loadingEl = document.getElementById('loading');
-  loadingEl.style.display = 'block';
-  loadingEl.innerText = 'Searching and zooming...';
-
-  const zoomPromise = fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(val)}&countrycodes=in&limit=1&addressdetails=1`)
-    .then(res => res.json())
-    .then(locations => {
-      if (locations && locations.length > 0) {
-        const first = locations[0];
-        const lat = parseFloat(first.lat);
-        const lon = parseFloat(first.lon);
-        map.setView([lat, lon], 13);
-      } else {
-        map.setView([28.6139, 77.2090], 10);
-      }
-    })
-    .catch(err => {
-      console.error('Geocoding failed:', err);
-      map.setView([28.6139, 77.2090], 10);
-    });
-
-  const searchStr = val.toLowerCase();
-  const filtered = allRequests.filter(obj => 
-    Object.values(obj).some(field => 
-      field && typeof field === 'string' && field.toLowerCase().includes(searchStr)
-    )
-  );
-  renderMarkers(filtered);
-
-  Promise.all([zoomPromise]).then(() => {
-    loadingEl.style.display = 'none';
-  });
 }
 
-document.getElementById('searchBtn').onclick = doSearch;
-document.getElementById('searchInput').addEventListener('keydown', function(e) { 
-  if(e.key === 'Enter') doSearch(); 
-});
-document.getElementById('resetBtn').onclick = function() {
+// Reset function
+function resetSearch() {
   document.getElementById('searchInput').value = '';
-  renderMarkers(allRequests);
   map.setView([23.5937, 80.9629], 5);
-};
+}
 
-L.Control.geocoder({ defaultMarkGeocode: false })
-  .on('markgeocode', function(e) {
-    const bbox = e.geocode.bbox;
-    map.fitBounds(bbox);
-  }).addTo(map);
-
-map.pm.addControls({
-  position: 'topleft', drawMarker: true, drawPolygon: false, drawPolyline: false, drawRectangle: false,
-  drawCircle: false, drawCircleMarker: false, editMode: true, dragMode: true, cutPolygon: false, removalMode: true,
-});
-
-map.on('pm:create', e => {
-  if (e.shape === 'Marker') {
-    const marker = e.layer;
-    const form = `
-      <form id="markerForm">
-        <label>Name: <input type="text" name="fullname" required></label><br/>
-        <label>Aid Type: <input type="text" name="aidtype" required></label><br/>
-        <label>Emergency Level:
-          <select name="emergency_level" required>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-        </label><br/>
-        <label>Details:<br/><textarea name="details" rows="3" required></textarea></label><br/>
-        <label>Contact/Availability: <input type="text" name="phone"></label><br/>
-        <button type="submit">Submit</button>
-      </form>
-    `;
-    marker.bindPopup(form).openPopup();
-    setTimeout(() => {
-      const formElement = document.getElementById('markerForm');
-      if (formElement) {
-        formElement.addEventListener('submit', function(event) {
-          event.preventDefault();
-          const formData = new FormData(event.target);
-          const values = Object.fromEntries(formData.entries());
-          values.latitude = marker.getLatLng().lat;
-          values.longitude = marker.getLatLng().lng;
-          const newIcon = createColoredIcon(levelIcons[values.emergency_level] || 'green');
-          marker.setIcon(newIcon);
-          marker.closePopup();
-          alert('Aid request submitted! Refresh the map to see updates.');
-        });
-      }
-    }, 150);
-  }
-});
-
+// Initialize
 fetchRequests().then(results => {
   allRequests = results;
   renderMarkers(results);
 });
 
 function toggleMobileMenu() {
-    const mobileNav = document.getElementById('mobile-nav');
-    const hamburger = document.querySelector('.hamburger-menu');
-    
-    mobileNav.classList.toggle('hidden');
-    hamburger.classList.toggle('active');
+  const mobileNav = document.getElementById('mobile-nav');
+  mobileNav.classList.toggle('hidden');
 }
 
-// Modal functionality
-document.getElementById('closeModal').onclick = function() {
-    document.getElementById('aidRequestModal').classList.add('hidden');
-};
-
-document.getElementById('aidRequestModal').onclick = function(e) {
-    if (e.target === this) {
-        this.classList.add('hidden');
-    }
-};
-
-document.getElementById('aidRequestForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const values = Object.fromEntries(formData.entries());
-    
-    console.log('Aid request submitted:', values);
-    alert('Aid request submitted successfully! It will be reviewed and added to the map.');
-    
-    document.getElementById('aidRequestModal').classList.add('hidden');
-    e.target.reset();
-});
-
-// Modal functionality
 document.getElementById('addRequestBtn').onclick = function() {
-    document.getElementById('aidRequestModal').classList.remove('hidden');
+  window.location.href = '../php/request.php';
 };
-
 
 </script>
 </body>
